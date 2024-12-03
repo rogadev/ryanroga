@@ -1,0 +1,112 @@
+# RyanRoga.com
+
+A portfolio website for Ryan Roga.
+
+## Purpose
+
+This project is a portfolio website for Ryan Roga. It is built with Astro 4 and TypeScript. The purpose of this project is to showcase my skills as a developer and to provide a platform for potential employers to learn more about me and my work. The website is designed to be a single-page application with a focus on showcasing my work and providing a way for visitors to get in touch with me. Content for the website should be written in a way that is engaging and informative, while also being visually appealing and easy to navigate. It should be a good representation of my skills and abilities as a developer, and convey a tone of professionalism and enthusiasm for the work I do.
+
+## Astro 4
+
+This project is built with Astro 4. You can find the docs for Astro at https://docs.astro.build/en/getting-started/
+
+## TypeScript
+
+All script should be written in TypeScript whenever possible, unless there is a specific reason not to.
+
+## Coding Best Practices
+
+- All new components should be written in the src/components directory.
+- All new pages should be written in the src/pages directory.
+- All new utilities should be written in the src/utils directory.
+- All new types should be written in the src/types directory.
+- All new assets should be written in the public directory.
+- All new layouts should be written in the src/layouts directory.
+
+## The README
+
+I fully expect potential employers to look at the README file to learn about me. Therefore, it should be well-written and engaging. As we add packages, update dependencies, and add new features, the README should be updated to reflect the current state of the project. Use markdown formatting and be sure to make the README as readable as possible. Ensure it is well structured, such that a potential employer could quickly jump to sections that are most relevant to them.
+
+## All About Ryan...
+
+About Me
+🌐 I am web developer specializing in full-stack web application development. Over the years, I have successfully developed software solutions that address complex business needs. As a full-stack web developer, I have collaborated with diverse clients, translating their requirements into functional and scalable applications.
+
+🚀 My expertise includes creating innovative solutions for business operations and logistics management, task automation, customer relationship enhancements, AI integration, and educational tools. I prioritize user-centered design, ensuring streamlined interfaces and robust backend architectures that enhance overall performance. Proficient in frameworks like Nuxt 3, Vue 3, TypeScript, and TailwindCSS, I consistently adhere to coding best practices.
+
+🔍 I am currently seeking a full-time position within a collaborative team where I can leverage my skills and contribute to impactful projects. I am committed to continuous growth and eager to tackle new challenges that drive innovation and success.
+
+📬 Feel free to reach out: Email | LinkedIn Profile
+
+Languages:
+TypeScript JavaScript HTML HTML
+
+Familiar Tools:
+Vue.js Nuxt.js Svelte Node.js Express Tailwind CSS Prisma Supabase OpenAI API Vitest Jest Git GitHub npm pnpm yarn PostgreSQL
+
+Additional Technologies:
+I have practical experience with a variety of other technologies, which I am capable of using effectively in projects and am actively enhancing my skills in:
+
+React Next.js Astro AWS GCP Python Docker JWT OAuth Firebase MongoDB Puppeteer Cypress Mocha IoT Microcontrollers
+
+Featured Projects
+CarEvo Logistics Web Application
+Client
+
+Nuxt.js Vue.js TypeScript TailwindCSS Prisma Supabase
+
+The Carevo Auto Solutions Web Application optimizes the logistics and management of used vehicles for Carevo, a premier online used car dealership in Eastern Canada. This comprehensive tool enhances operational efficiency by facilitating vehicle handling across multiple lots, tracking services, and providing timely updates for both logistics and sales teams. Seamlessly integrating vendor portal features, real-time vehicle tracking, request management, and QR code functionality, this application ensures smooth operations and enhanced customer experiences. Built with Nuxt 3, Vue 3, TypeScript, and TailwindCSS, this project exemplifies my expertise in creating scalable and user-friendly web solutions tailored to specific industry needs.
+
+VIU Career Outlooks Web Application
+Live Repo
+
+Data Collection
+JavaScript Node.js Express Puppeteer
+
+Proof of Concept
+TypeScript Vue.js Nuxt.js
+
+Final Project
+TypeScript Svelte Node.js Prisma Tailwind CSS Vite Fuse.js node-cache
+
+The VIU Career Outlooks Web Application represents a pivotal collaboration between myself and Vancouver Island University, conceived during my 2022 summer internship as part of the ITAS Web and Mobile Development Diploma program. Aimed at aiding prospective students in making informed decisions regarding their educational and professional paths, this innovative tool seamlessly connects VIU programs and credentials with real-world employment opportunities. By integrating data scraping techniques and database management with Prisma, I ensured the accuracy and relevance of employment outlooks presented to users. Currently live on VIU's website, the application provides detailed insights into career pathways, job prospects, and industry trends across British Columbia. As I continue to evolve this project, I'm enhancing its functionality with features such as user authentication and personalized price sheets, while transitioning to modern technologies like Nuxt, TypeScript, and Tailwind CSS for improved performance and usability.
+
+Granny Go Go Trip Tracker (Capstone Project)
+Client Repo
+
+Vue.js Nuxt.js TypeScript Tailwind CSS Prisma Supabase Google Maps API OpenAI API Zod Vitest Tailwind Forms Tailwind Typography Nuxt Icon Chalk eslint DaisyUI Nanoid Consola Superjson
+
+The Granny Go Go Trip Tracker project offers a comprehensive solution for modernizing trip scheduling and management within the medical transportation sector. Developed with a focus on enhancing driver efficiency and passenger communication, this intuitive web application simplifies trip planning and execution. Leveraging a tech stack comprised of TypeScript, Vue 3, Nuxt 3, and Tailwind CSS, I designed a robust frontend interface that provides drivers with essential trip details at a glance. The integration of OpenAI's Chat Completion API with GPT-3.5-Turbo streamlines schedule generation, allowing drivers to create optimized driving routes from email dispatches effortlessly. Additionally, the application features AI-powered conflict detection and route optimization functionalities, ensuring smooth and timely transportation experiences for passengers. By prioritizing usability and functionality, the Granny Go Go Trip Tracker project demonstrates my proficiency in developing innovative solutions that address real-world logistical challenges within the medical transportation industry.
+
+Additional Projects
+MossAway Victoria, CMS Website
+Client Live Repo
+
+Astro Svelte TailwindCSS
+
+As a part of my ITAS268 Final Project, I created the Victoria MossAway Portfolio using Astro, a modern frontend framework. Departing from traditional CMS platforms like Drupal or WordPress, I crafted a custom CMS solution tailored to my needs. Leveraging AI technology, I generated unique moss monster images and optimized text to enhance SEO and engage visitors effectively. Despite its short-lived duration due to the sale of MossAway, this portfolio site proved highly effective, ranking organically on Google and competently representing my work without conflicting with the SEO of the original MossAway site.
+
+Password Generator
+Live Repo
+
+Vue.js TypeScript TailwindCSS
+
+This basic Password Generator is a simple yet effective tool for generating secure passwords quickly and easily. Built in just a couple of hours, this lightweight application allows users to customize their passwords by choosing whether to include special characters, uppercase and/or lowercase letters, and numbers. With a click, users can save their generated password to the clipboard for convenience. Leveraging Vue.js for frontend functionality and TypeScript for robust type-checking, the RogaDev Password Generator demonstrates my proficiency in crafting responsive and visually appealing interfaces. Despite its simplicity, this project underscores my commitment to delivering effective solutions that meet user needs in a straightforward manner.
+
+Window Cleaning Project Evaluation Tool
+Live Repo
+
+HTML CSS JavaScript
+
+Initially developed during my first year of school, the Window Cleaning Project Evaluation Tool originated from a need within my previous business, which specialized in exterior cleaning services. Faced with the challenge of generating accurate window cleaning quotes efficiently, I identified a gap in available tools and decided to create a solution myself. Leveraging vanilla HTML, CSS, and JavaScript, I crafted a mobile-friendly application that prioritized simplicity, speed, and effectiveness. This initial version proved highly successful in streamlining the quotation process. Currently, I'm actively enhancing the tool for a future version. This new iteration incorporates advanced features such as user authentication, personalized price sheets with save functionality, and a complete rewrite using modern technologies including Nuxt, TypeScript, and Tailwind CSS. Through this ongoing development, I aim to further improve the tool's functionality and usability, catering to the evolving needs of window cleaning professionals.
+
+Experience
+Freelance Web Developer
+Freelancing post-graduation, developing custom web solutions for various clients including CarEvo and educational tools for VIU.
+Web Developer, VIU Web Department
+Developed key projects like the VIU Career Outlooks web app, enhancing the student interface for career planning.
+Education
+Diploma in Web and Mobile Application Development
+Vancouver Island University, Top of my class
+Let's Connect!
+Feel free to follow me on GitHub to stay updated on my projects.

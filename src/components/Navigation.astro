@@ -1,0 +1,161 @@
+---
+const navigation = [
+  { name: 'Home', href: '#home' },
+  { name: 'About', href: '#about' },
+  { name: 'Projects', href: '#projects' },
+  { name: 'Contact', href: '#contact' },
+]
+
+const currentPath = Astro.url.pathname
+---
+
+<header
+  class='fixed w-full top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-sm'
+  role='banner'
+>
+  <nav class='container mx-auto px-4' aria-label='Main navigation'>
+    <div class='flex items-center justify-between h-16'>
+      <!-- Logo/Name -->
+      <a
+        href='#home'
+        class='text-xl font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400'
+      >
+        Ryan Roga
+      </a>
+
+      <!-- Desktop Navigation -->
+      <div class='hidden md:flex items-center space-x-8' role='navigation'>
+        {
+          navigation.map((item) => (
+            <a
+              href={item.href}
+              class='text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors'
+              aria-current={currentPath === item.href ? 'page' : undefined}
+            >
+              {item.name}
+            </a>
+          ))
+        }
+
+        <!-- Resume Button -->
+        <a
+          href='#resume'
+          class='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
+        >
+          Resume
+        </a>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button
+        id='mobile-menu-button'
+        class='md:hidden text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+        aria-label='Toggle menu'
+        aria-expanded='false'
+        aria-controls='mobile-menu'
+      >
+        <svg
+          class='w-6 h-6'
+          fill='none'
+          stroke='currentColor'
+          viewBox='0 0 24 24'
+        >
+          <path
+            class='menu-icon'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+            stroke-width='2'
+            d='M4 6h16M4 12h16M4 18h16'></path>
+          <path
+            class='close-icon hidden'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+            stroke-width='2'
+            d='M6 18L18 6M6 6l12 12'></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <div
+      id='mobile-menu'
+      class='md:hidden hidden pb-4'
+      role='navigation'
+      aria-label='Mobile navigation'
+    >
+      <div class='flex flex-col space-y-4'>
+        {
+          navigation.map((item) => (
+            <a
+              href={item.href}
+              class='text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors'
+            >
+              {item.name}
+            </a>
+          ))
+        }
+        <a
+          href='#resume'
+          class='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 text-center'
+        >
+          Resume
+        </a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<script>
+  function setupMobileMenu() {
+    const mobileMenuButton = document.getElementById('mobile-menu-button')
+    const mobileMenu = document.getElementById('mobile-menu')
+    const menuIcon = document.querySelector('.menu-icon')
+    const closeIcon = document.querySelector('.close-icon')
+
+    if (!mobileMenuButton || !mobileMenu || !menuIcon || !closeIcon) return
+
+    const toggleMenu = (show: boolean) => {
+      mobileMenu.classList.toggle('hidden', !show)
+      menuIcon.classList.toggle('hidden', show)
+      closeIcon.classList.toggle('hidden', !show)
+      mobileMenuButton.setAttribute('aria-expanded', show.toString())
+    }
+
+    mobileMenuButton.addEventListener('click', () => {
+      const isExpanded =
+        mobileMenuButton.getAttribute('aria-expanded') === 'true'
+      toggleMenu(!isExpanded)
+    })
+
+    // Close mobile menu when clicking a link
+    mobileMenu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => toggleMenu(false))
+    })
+
+    // Close mobile menu on escape key
+    document.addEventListener('keydown', (e) => {
+      if (
+        e.key === 'Escape' &&
+        mobileMenuButton.getAttribute('aria-expanded') === 'true'
+      ) {
+        toggleMenu(false)
+      }
+    })
+  }
+
+  setupMobileMenu()
+</script>
+
+<style>
+  /* Smooth scroll padding for navigation */
+  :target {
+    scroll-margin-top: 5rem;
+  }
+
+  /* Ensure focus states are visible */
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid theme('colors.blue.500');
+    outline-offset: 2px;
+  }
+</style>
