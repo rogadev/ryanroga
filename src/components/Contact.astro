@@ -35,7 +35,10 @@ const contactInfo: ContactInfo = {
         </h3>
 
         <!-- Hide contact info initially -->
-        <div id='contact-info' class='space-y-4 hidden'>
+        <div
+          id='contact-info'
+          class='space-y-4 hidden opacity-0 transition-opacity duration-300'
+        >
           <div class='flex items-center justify-center'>
             <svg
               class='w-6 h-6 text-blue-600 dark:text-blue-400 mr-4'
@@ -118,14 +121,17 @@ const contactInfo: ContactInfo = {
         </div>
 
         <!-- Add CAPTCHA container -->
-        <div id='captcha-container' class='mt-6 flex justify-center'>
+        <div
+          id='captcha-container'
+          class='mt-6 flex justify-center opacity-100 transition-opacity duration-300'
+        >
           <div id='turnstile-container'></div>
         </div>
 
         <!-- Show this message before verification -->
         <div
           id='pre-verification-message'
-          class='text-gray-600 dark:text-gray-300 text-center'
+          class='text-gray-600 dark:text-gray-300 text-center opacity-100 transition-opacity duration-300'
         >
           Please complete the verification to view contact information.
         </div>
@@ -166,16 +172,39 @@ const contactInfo: ContactInfo = {
           const result = await response.json()
 
           if (result.success) {
+            // Get elements once
             const contactInfo = document.getElementById('contact-info')
             const preVerification = document.getElementById(
               'pre-verification-message'
             )
+            const captchaContainer =
+              document.getElementById('captcha-container')
 
-            if (!contactInfo) return
-
-            if (preVerification) {
-              preVerification.remove()
+            if (!contactInfo || !preVerification || !captchaContainer) {
+              console.error('Required elements not found')
+              return
             }
+
+            // Fade out CAPTCHA and pre-verification message
+            captchaContainer.classList.add('opacity-0')
+            preVerification.classList.add('opacity-0')
+
+            // Wait for fade out transition
+            setTimeout(() => {
+              // Hide elements completely
+              captchaContainer.style.display = 'none'
+              preVerification.style.display = 'none'
+
+              // Show and fade in contact info
+              contactInfo.classList.remove('hidden')
+              contactInfo.style.display = 'block'
+
+              // Trigger reflow
+              void contactInfo.offsetHeight
+
+              // Fade in contact info
+              contactInfo.classList.remove('opacity-0')
+            }, 300) // Match the transition duration
 
             const emailLink = contactInfo.querySelector(
               'a[aria-label="Send email"]'
@@ -209,13 +238,6 @@ const contactInfo: ContactInfo = {
               if (githubUsername) {
                 const githubUser = result.data.github.split('/').pop()
                 githubUsername.textContent = `(${githubUser})`
-              }
-            }
-
-            if (contactInfo) {
-              contactInfo.classList.remove('hidden')
-              if (preVerification) {
-                preVerification.classList.add('hidden')
               }
             }
           }
