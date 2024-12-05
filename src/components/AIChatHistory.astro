@@ -50,7 +50,7 @@ interface ChatMessage {
           type='tel'
           id='visitorPhone'
           name='visitorPhone'
-          pattern='[+]?[0-9]{1,4}?[0-9]{10}'
+          pattern='[(]?[0-9]{3}[)]?[-\s]?[0-9]{3}[-\s]?[0-9]{4}'
           class='w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-colors'
           required
         />
@@ -175,8 +175,10 @@ interface ChatMessage {
         : 'bg-gray-200 dark:bg-gray-600 text-gray-900 dark:text-gray-100'
     }`
 
+    // Replace newlines with <br> tags and preserve whitespace
+    const formattedContent = message.content.replace(/\n/g, '<br>')
     messageContent.innerHTML = `
-            <p>${message.content}</p>
+            <p class="whitespace-pre-line">${formattedContent}</p>
             <span class="text-xs opacity-70 ${message.role === 'user' ? 'text-blue-100' : 'text-gray-600 dark:text-gray-300'}">
                 ${formatTimestamp(message.timestamp)}
             </span>
@@ -224,6 +226,7 @@ interface ChatMessage {
     .getElementById('chatRegistration')
     ?.addEventListener('submit', (e) => {
       e.preventDefault()
+
       const form = e.target as HTMLFormElement
       const formData = new FormData(form)
 
@@ -233,7 +236,7 @@ interface ChatMessage {
         phone: formData.get('visitorPhone') as string,
       }
 
-      form.classList.add('hidden')
+      document.getElementById('chatRegistration')?.classList.add('hidden')
       document.getElementById('chatInterface')?.classList.remove('hidden')
     })
 
@@ -249,8 +252,7 @@ interface ChatMessage {
     })
   }
 
-  document.getElementById('chatForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault()
+  async function handleChatSubmit() {
     updateLoadingState(true)
 
     try {
@@ -282,22 +284,36 @@ interface ChatMessage {
         }),
       })
 
-      if (response.ok) {
-        const aiResponse = await response.json()
-        const assistantMessage: ChatMessage = {
-          role: 'assistant',
-          content: aiResponse.message,
-          timestamp: new Date(),
-        }
-
-        chatHistory.push(assistantMessage)
-        addMessageToChat(assistantMessage)
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(
+          errorData.details || errorData.error || 'Failed to get response'
+        )
       }
+
+      const aiResponse = await response.json()
+      const assistantMessage: ChatMessage = {
+        role: 'assistant',
+        content: aiResponse.message,
+        timestamp: new Date(),
+      }
+
+      chatHistory.push(assistantMessage)
+      addMessageToChat(assistantMessage)
     } catch (error) {
       console.error('Failed to get AI response:', error)
+      alert(
+        'An error occurred while processing your request. Please try again later.'
+      )
     } finally {
       updateLoadingState(false)
     }
+  }
+
+  // Update event listener for chat form submission
+  document.getElementById('chatForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    await handleChatSubmit()
   })
 
   document

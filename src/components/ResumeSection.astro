@@ -31,9 +31,9 @@ import AIChatHistory from './AIChatHistory.astro'
         </div>
       </a>
 
-      <button id='aiResumeBtn' class='block text-left'>
+      <button id='aiResumeBtn' class='block text-left cursor-default'>
         <div
-          class='bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow'
+          class='bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow relative'
         >
           <h3 class='text-2xl font-semibold text-gray-900 dark:text-white mb-4'>
             AI-Tailored Resume
@@ -42,11 +42,17 @@ import AIChatHistory from './AIChatHistory.astro'
             Upload a job posting to receive a customized resume that highlights
             my most relevant experience for the role.
           </p>
+          <span
+            class='absolute top-0 right-0 mt-2 mr-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full'
+          >
+            Coming Soon
+          </span>
         </div>
       </button>
     </div>
 
     <!-- AI Resume Generator Section (Hidden by default) -->
+    <!--
     <div id='aiResumeSection' class='hidden max-w-4xl mx-auto'>
       <div class='bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mb-8'>
         <h3 class='text-2xl font-semibold text-gray-900 dark:text-white mb-6'>
@@ -76,38 +82,37 @@ import AIChatHistory from './AIChatHistory.astro'
           </button>
         </form>
       </div>
-
-      <!-- Generated Resume Display -->
-      <div
-        id='generatedResume'
-        class='hidden bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8'
-      >
-        <!-- Content will be populated by JavaScript -->
-      </div>
-    </div>
-
-    <!-- AI Chat Section -->
-    <div class='max-w-4xl mx-auto mt-12'>
-      <AIChatHistory />
+  -->
+    <!-- Generated Resume Display --><!--
+    <div
+      id='generatedResume'
+      class='hidden bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8'
+    >
+      --><!-- Content will be populated by JavaScript --><!--
     </div>
   </div>
-</section>
+  -->
 
-<script>
-  // Toggle AI Resume Section
+    <!-- AI Chat Section -->
+    <!-- <div class='max-w-4xl mx-auto mt-12'>
+      <AIChatHistory />
+    </div> -->
+  </div>
+
+  <script>
+    // Remove or comment out the existing click handler since feature is disabled
+    /*
   const aiResumeBtn = document.getElementById('aiResumeBtn')
   const aiResumeSection = document.getElementById('aiResumeSection')
-  const jobPostingForm = document.getElementById('jobPostingForm')
-  const generatedResume = document.getElementById('generatedResume')
-
   if (aiResumeBtn && aiResumeSection) {
     aiResumeBtn.addEventListener('click', () => {
       aiResumeSection.classList.remove('hidden')
-      // Smooth scroll to the form
       aiResumeSection.scrollIntoView({ behavior: 'smooth' })
     })
   }
+  */
 
+    /*
   if (jobPostingForm) {
     jobPostingForm.addEventListener('submit', async (e) => {
       e.preventDefault()
@@ -115,5 +120,6 @@ import AIChatHistory from './AIChatHistory.astro'
       // This will be implemented later with your AI integration
     })
   }
-</script>
-
+  */
+  </script>
+</section>
