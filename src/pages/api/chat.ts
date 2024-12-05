@@ -3,11 +3,11 @@ import type { APIRoute } from 'astro';
 import { generateText } from 'ai';
 import { loadEnv } from "vite";
 
-const { ANTHROPIC_API_KEY } = loadEnv(process.env.NODE_ENV, process.cwd(), "");
+const env = loadEnv("production", process.cwd(), "ANTHROPIC");
+const apiKey = env.ANTHROPIC_API_KEY;
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const apiKey = ANTHROPIC_API_KEY;
     console.log('Retrieved API key:', apiKey);
 
     if (!apiKey) {

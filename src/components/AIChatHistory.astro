@@ -245,9 +245,10 @@
   function updateLoadingState(isLoading: boolean) {
     const buttons = document.querySelectorAll('button[type="submit"]')
     buttons.forEach((button) => {
-      button.disabled = isLoading
-      button.setAttribute('data-loading', isLoading.toString())
-      const spinner = button.querySelector('.loading-spinner')
+      const btn = button as HTMLButtonElement
+      btn.disabled = isLoading
+      btn.setAttribute('data-loading', isLoading.toString())
+      const spinner = btn.querySelector('.loading-spinner')
       if (spinner) {
         spinner.classList.toggle('hidden', !isLoading)
       }

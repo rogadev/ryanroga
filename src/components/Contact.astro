@@ -154,7 +154,7 @@ const turnstileSiteKey = import.meta.env.TURNSTILE_SITE_KEY as string
   }
 
   window.onloadTurnstileCallback = function () {
-    turnstile.render('#turnstile-container', {
+    window.turnstile.render('#turnstile-container', {
       sitekey: '0x4AAAAAAA1jHJu-9QywpvDf',
       callback: async function (token: string) {
         try {
@@ -169,41 +169,58 @@ const turnstileSiteKey = import.meta.env.TURNSTILE_SITE_KEY as string
           const result = await response.json()
 
           if (result.success) {
-            // Update contact info with received data
             const contactInfo = document.getElementById('contact-info')
             const preVerification = document.getElementById(
               'pre-verification-message'
             )
 
-            // Update email link
+            if (!contactInfo) return
+
+            if (preVerification) {
+              preVerification.remove()
+            }
+
             const emailLink = contactInfo.querySelector(
               'a[aria-label="Send email"]'
-            )
-            emailLink.href = `mailto:${result.data.email}`
-            emailLink.textContent = result.data.email
+            ) as HTMLAnchorElement | null
 
-            // Extract LinkedIn username from URL and update
+            if (emailLink) {
+              emailLink.href = `mailto:${result.data.email}`
+              emailLink.textContent = result.data.email
+            }
+
             const linkedinLink = contactInfo.querySelector(
               'a[aria-label="LinkedIn profile"]'
-            )
-            linkedinLink.href = result.data.linkedin
-            const linkedinUsername =
-              linkedinLink.querySelector('#linkedin-username')
-            const linkedinUser = result.data.linkedin.split('/').pop()
-            linkedinUsername.textContent = `(${linkedinUser})`
+            ) as HTMLAnchorElement | null
+            if (linkedinLink) {
+              linkedinLink.href = result.data.linkedin
+              const linkedinUsername =
+                linkedinLink.querySelector('#linkedin-username')
+              if (linkedinUsername) {
+                const linkedinUser = result.data.linkedin.split('/').pop()
+                linkedinUsername.textContent = `(${linkedinUser})`
+              }
+            }
 
-            // Extract GitHub username from URL and update
             const githubLink = contactInfo.querySelector(
               'a[aria-label="GitHub profile"]'
-            )
-            githubLink.href = result.data.github
-            const githubUsername = githubLink.querySelector('#github-username')
-            const githubUser = result.data.github.split('/').pop()
-            githubUsername.textContent = `(${githubUser})`
+            ) as HTMLAnchorElement | null
+            if (githubLink) {
+              githubLink.href = result.data.github
+              const githubUsername =
+                githubLink.querySelector('#github-username')
+              if (githubUsername) {
+                const githubUser = result.data.github.split('/').pop()
+                githubUsername.textContent = `(${githubUser})`
+              }
+            }
 
-            // Show contact info
-            contactInfo.classList.remove('hidden')
-            preVerification.classList.add('hidden')
+            if (contactInfo) {
+              contactInfo.classList.remove('hidden')
+              if (preVerification) {
+                preVerification.classList.add('hidden')
+              }
+            }
           }
         } catch (error) {
           console.error('Validation error:', error)
