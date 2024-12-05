@@ -138,10 +138,25 @@ const turnstileSiteKey = import.meta.env.TURNSTILE_SITE_KEY as string
 </section>
 
 <script>
+  declare global {
+    interface Window {
+      onloadTurnstileCallback: () => void
+      turnstile: {
+        render: (
+          selector: string,
+          options: {
+            sitekey: string
+            callback: (token: string) => void
+          }
+        ) => void
+      }
+    }
+  }
+
   window.onloadTurnstileCallback = function () {
     turnstile.render('#turnstile-container', {
       sitekey: '0x4AAAAAAA1jHJu-9QywpvDf',
-      callback: async function (token) {
+      callback: async function (token: string) {
         try {
           const response = await fetch('/api/validate-turnstile', {
             method: 'POST',
