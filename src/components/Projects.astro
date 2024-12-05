@@ -1,0 +1,173 @@
+---
+interface Project {
+  title: string
+  description: string
+  technologies: string[]
+  links: {
+    live?: string
+    repo?: string
+    client?: string
+  }
+  image?: string
+}
+
+const projects: Project[] = [
+  {
+    title: 'CarEvo Logistics Web Application',
+    description:
+      'A comprehensive logistics management system for Carevo, a premier online used car dealership. Features vehicle tracking, service management, and vendor portal integration.',
+    technologies: [
+      'Nuxt.js',
+      'Vue.js',
+      'TypeScript',
+      'TailwindCSS',
+      'Prisma',
+      'Supabase',
+    ],
+    links: {
+      client:
+        'https://carevo.ca/?utm_source=ryanroga&utm_medium=portfolio&utm_campaign=featured_projects',
+    },
+  },
+  {
+    title: 'VIU Career Outlooks',
+    description:
+      'An innovative tool connecting VIU programs with real-world employment opportunities, featuring data scraping and dynamic career pathway visualization.',
+    technologies: [
+      'TypeScript',
+      'Svelte',
+      'Node.js',
+      'Prisma',
+      'Tailwind CSS',
+      'Fuse.js',
+    ],
+    links: {
+      client:
+        'https://viu.ca/?utm_source=ryanroga&utm_medium=portfolio&utm_campaign=featured_projects',
+      repo: 'https://github.com/rogadev/viu-career-outlooks',
+    },
+  },
+  {
+    title: 'Granny Go Go Trip Tracker',
+    description:
+      "A medical transportation management system with AI-powered route optimization and schedule generation using OpenAI's GPT-3.5-Turbo.",
+    technologies: [
+      'Vue.js',
+      'Nuxt.js',
+      'TypeScript',
+      'Tailwind CSS',
+      'Prisma',
+      'Supabase',
+      'OpenAI API',
+      'Google Maps API',
+    ],
+    links: {
+      client:
+        'https://www.grannygogo.ca/?utm_source=ryanroga&utm_medium=portfolio&utm_campaign=featured_projects',
+      repo: 'https://github.com/rogadev/capstone',
+    },
+  },
+]
+---
+
+<section
+  id='projects'
+  class='py-20 bg-gray-50 dark:bg-gray-800'
+  aria-labelledby='projects-heading'
+>
+  <div class='container mx-auto px-4'>
+    <h2
+      id='projects-heading'
+      class='text-4xl font-bold text-gray-900 dark:text-white mb-4 text-center'
+    >
+      Featured Projects
+    </h2>
+
+    <div class='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
+      {
+        projects.map((project, index) => (
+          <article
+            class='bg-white dark:bg-gray-700 rounded-xl shadow-lg overflow-hidden transition-transform hover:-translate-y-1 flex flex-col h-full'
+            aria-labelledby={`project-${index}`}
+          >
+            {project.image && (
+              <img
+                src={project.image}
+                alt={`Screenshot of ${project.title}`}
+                class='w-full h-48 object-cover'
+              />
+            )}
+            <div class='p-6 flex flex-col flex-grow'>
+              <div class='flex-grow'>
+                <h3
+                  id={`project-${index}`}
+                  class='text-2xl font-bold text-gray-900 dark:text-white mb-3'
+                >
+                  {project.title}
+                </h3>
+                <p class='text-gray-600 dark:text-gray-300'>
+                  {project.description}
+                </p>
+              </div>
+
+              <div class='mt-4'>
+                <div class='flex flex-wrap gap-2 mb-4'>
+                  {project.technologies.map((tech) => (
+                    <span class='px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 rounded-full text-sm whitespace-nowrap'>
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+                <div class='flex flex-wrap gap-3'>
+                  {project.links.live && (
+                    <a
+                      href={project.links.live}
+                      class='text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300'
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      aria-label={`View live demo of ${project.title}`}
+                    >
+                      Live Demo →
+                    </a>
+                  )}
+                  {project.links.client && (
+                    <a
+                      href={project.links.client}
+                      class='text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300'
+                      target='_blank'
+                      aria-label={`View client project of ${project.title}`}
+                    >
+                      Client →
+                    </a>
+                  )}
+                  {project.links.repo && (
+                    <a
+                      href={project.links.repo}
+                      class='text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300'
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      aria-label={`View GitHub repository of ${project.title}`}
+                    >
+                      GitHub →
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class='text-center mt-12'>
+      <a
+        href='https://github.com/rogadev'
+        class='inline-block px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300'
+        target='_blank'
+        rel='noopener noreferrer'
+      >
+        View More on GitHub
+      </a>
+    </div>
+  </div>
+</section>

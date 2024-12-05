@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang='en' class='scroll-smooth'>
+  <head>
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <meta
+      name='theme-color'
+      content='#ffffff'
+      media='(prefers-color-scheme: light)'
+    />
+    <meta
+      name='theme-color'
+      content='#111827'
+      media='(prefers-color-scheme: dark)'
+    />
+    <meta
+      name='description'
+      content='Ryan Roga - Full Stack Web Developer specializing in TypeScript, Vue.js, and modern web technologies'
+    />
+    <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
+    <meta name='generator' content={Astro.generator} />
+
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property='og:title' content='Ryan Roga - Full Stack Web Developer' />
+    <meta
+      property='og:description'
+      content='Portfolio of Ryan Roga - Full Stack Web Developer specializing in TypeScript, Vue.js, and modern web technologies'
+    />
+    <meta property='og:type' content='website' />
+    <meta property='og:image' content='/og-image.jpg' />
+    <meta property='og:url' content='https://ryanroga.com' />
+
+    <title>Ryan Roga | Full Stack Web Developer</title>
+  </head>
+  <body class='min-h-screen bg-white dark:bg-gray-900 antialiased'>
+    <a
+      href='#main-content'
+      class='sr-only focus:not-sr-only focus:absolute focus:p-4'
+    >
+      Skip to main content
+    </a>
+    <main id='main-content'>
+      <slot />
+    </main>
+  </body>
+</html>

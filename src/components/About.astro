@@ -1,0 +1,184 @@
+---
+// Define skills grouped by category for easy maintenance and updates
+const skills = {
+  languages: ['TypeScript', 'JavaScript', 'HTML'],
+  frameworks: ['Vue.js', 'Nuxt.js', 'Svelte', 'Astro', 'Node.js', 'Express'],
+  tools: [
+    'Tailwind CSS',
+    'Prisma',
+    'Supabase',
+    'OpenAI API',
+    'Git',
+    'PostgreSQL',
+  ],
+  additional: ['React', 'Next.js', 'AWS', 'Docker', 'Python', 'MongoDB'],
+}
+---
+
+<section
+  id='about'
+  class='py-20 bg-white dark:bg-gray-900'
+  aria-labelledby='about-heading'
+>
+  <div class='container mx-auto px-4 sm:px-6 lg:px-8'>
+    <div class='max-w-4xl mx-auto'>
+      <h2
+        id='about-heading'
+        class='text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-6 sm:mb-8 text-center'
+      >
+        About Me
+      </h2>
+
+      <div
+        class='mb-8 sm:mb-12 text-base sm:text-lg text-gray-600 dark:text-gray-300 space-y-4 sm:space-y-6'
+      >
+        <p>
+          🌐 I am a web developer specializing in full-stack web application
+          development, with a proven track record of delivering complex business
+          solutions. My collaborative approach has helped diverse clients
+          transform their requirements into functional, scalable applications.
+        </p>
+        <p>
+          🚀 My expertise spans business operations, logistics management, task
+          automation, and AI integration. I prioritize user-centered design
+          principles, creating streamlined interfaces backed by robust
+          architectures that deliver exceptional performance.
+        </p>
+        <p>
+          🔍 Currently seeking a full-time position within a collaborative team
+          where I can leverage my skills and drive innovation. I'm passionate
+          about continuous learning and ready to tackle challenging projects
+          that make a real impact.
+        </p>
+      </div>
+
+      <div class='grid sm:grid-cols-2 lg:grid-cols-4 gap-8'>
+        {
+          /* Skill sections share the same structure - only the first needs ARIA attributes as example */
+        }
+        <div class='space-y-4'>
+          <h3
+            id='languages-heading'
+            class='text-xl font-semibold text-blue-600 dark:text-blue-400'
+          >
+            Languages
+          </h3>
+          <ul class='space-y-2' aria-labelledby='languages-heading'>
+            {
+              skills.languages.map((skill) => (
+                <li class='flex items-center text-gray-700 dark:text-gray-300'>
+                  <svg
+                    class='w-4 h-4 mr-2 text-green-500'
+                    fill='none'
+                    stroke='currentColor'
+                    viewBox='0 0 24 24'
+                    aria-hidden='true'
+                    role='img'
+                  >
+                    <path
+                      stroke-linecap='round'
+                      stroke-linejoin='round'
+                      stroke-width='2'
+                      d='M5 13l4 4L19 7'
+                    />
+                  </svg>
+                  <span>{skill}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <div class='space-y-4'>
+          <h3 class='text-xl font-semibold text-blue-600 dark:text-blue-400'>
+            Frameworks
+          </h3>
+          <ul class='space-y-2'>
+            {
+              skills.frameworks.map((skill) => (
+                <li class='flex items-center text-gray-700 dark:text-gray-300'>
+                  <svg
+                    class='w-4 h-4 mr-2 text-green-500'
+                    fill='none'
+                    stroke='currentColor'
+                    viewBox='0 0 24 24'
+                    aria-hidden='true'
+                    role='img'
+                  >
+                    <path
+                      stroke-linecap='round'
+                      stroke-linejoin='round'
+                      stroke-width='2'
+                      d='M5 13l4 4L19 7'
+                    />
+                  </svg>
+                  <span>{skill}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <div class='space-y-4'>
+          <h3 class='text-xl font-semibold text-blue-600 dark:text-blue-400'>
+            Tools
+          </h3>
+          <ul class='space-y-2'>
+            {
+              skills.tools.map((skill) => (
+                <li class='flex items-center text-gray-700 dark:text-gray-300'>
+                  <svg
+                    class='w-4 h-4 mr-2 text-green-500'
+                    fill='none'
+                    stroke='currentColor'
+                    viewBox='0 0 24 24'
+                    aria-hidden='true'
+                    role='img'
+                  >
+                    <path
+                      stroke-linecap='round'
+                      stroke-linejoin='round'
+                      stroke-width='2'
+                      d='M5 13l4 4L19 7'
+                    />
+                  </svg>
+                  <span>{skill}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <div class='space-y-4'>
+          <h3 class='text-xl font-semibold text-blue-600 dark:text-blue-400'>
+            Additional
+          </h3>
+          <ul class='space-y-2'>
+            {
+              skills.additional.map((skill) => (
+                <li class='flex items-center text-gray-700 dark:text-gray-300'>
+                  <svg
+                    class='w-4 h-4 mr-2 text-green-500'
+                    fill='none'
+                    stroke='currentColor'
+                    viewBox='0 0 24 24'
+                    aria-hidden='true'
+                    role='img'
+                  >
+                    <path
+                      stroke-linecap='round'
+                      stroke-linejoin='round'
+                      stroke-width='2'
+                      d='M5 13l4 4L19 7'
+                    />
+                  </svg>
+                  <span>{skill}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,197 @@
+---
+// Move contact info to environment variables or server-side
+const contactInfo = {
+  name: 'Ryan Roga',
+  // Contact info will be loaded after CAPTCHA verification
+}
+
+// At the top of your component
+const turnstileSiteKey = import.meta.env.TURNSTILE_SITE_KEY
+---
+
+<section id='contact' class='py-20 bg-gray-50 dark:bg-gray-800'>
+  <div class='container mx-auto px-4'>
+    <div class='max-w-2xl mx-auto'>
+      <div class='text-center mb-12'>
+        <h2 class='text-4xl font-bold text-gray-900 dark:text-white mb-4'>
+          Get in Touch
+        </h2>
+        <p class='text-xl text-gray-600 dark:text-gray-300'>
+          Interested in working together? Let's connect through my contact
+          information below!
+        </p>
+      </div>
+
+      <div
+        class='max-w-md mx-auto bg-white dark:bg-gray-700 rounded-xl shadow-lg p-8'
+      >
+        <h3
+          class='text-2xl font-semibold text-gray-900 dark:text-white mb-6 text-center'
+        >
+          Contact Information
+        </h3>
+
+        <!-- Hide contact info initially -->
+        <div id='contact-info' class='space-y-4 hidden'>
+          <div class='flex items-center justify-center'>
+            <svg
+              class='w-6 h-6 text-blue-600 dark:text-blue-400 mr-4'
+              fill='none'
+              stroke='currentColor'
+              viewBox='0 0 24 24'
+              aria-hidden='true'
+            >
+              <path
+                stroke-linecap='round'
+                stroke-linejoin='round'
+                stroke-width='2'
+                d='M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z'
+              ></path>
+            </svg>
+            <a
+              href={`mailto:${contactInfo.email}`}
+              class='text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+              aria-label='Send email'
+            >
+              {contactInfo.email}
+            </a>
+          </div>
+          <div class='flex items-center justify-center'>
+            <svg
+              class='w-6 h-6 text-blue-600 dark:text-blue-400 mr-4'
+              fill='none'
+              stroke='currentColor'
+              viewBox='0 0 24 24'
+              aria-hidden='true'
+            >
+              <path
+                stroke-linecap='round'
+                stroke-linejoin='round'
+                stroke-width='2'
+                d='M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z'
+              ></path>
+              <path
+                stroke-linecap='round'
+                stroke-linejoin='round'
+                stroke-width='2'
+                d='M2 9h4v12H2z'></path>
+              <circle cx='4' cy='4' r='2' stroke-width='2'></circle>
+            </svg>
+            <a
+              href={contactInfo.linkedin}
+              target='_blank'
+              rel='noopener noreferrer'
+              class='text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+              aria-label='LinkedIn profile'
+            >
+              LinkedIn <span id='linkedin-username'></span>
+            </a>
+          </div>
+          <div class='flex items-center justify-center'>
+            <svg
+              class='w-6 h-6 text-blue-600 dark:text-blue-400 mr-4'
+              fill='none'
+              stroke='currentColor'
+              viewBox='0 0 24 24'
+              aria-hidden='true'
+            >
+              <path
+                stroke-linecap='round'
+                stroke-linejoin='round'
+                stroke-width='2'
+                d='M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22'
+              ></path>
+            </svg>
+            <a
+              href={contactInfo.github}
+              target='_blank'
+              rel='noopener noreferrer'
+              class='text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+              aria-label='GitHub profile'
+            >
+              GitHub <span id='github-username'></span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Add CAPTCHA container -->
+        <div id='captcha-container' class='mt-6 flex justify-center'>
+          <div id='turnstile-container'></div>
+        </div>
+
+        <!-- Show this message before verification -->
+        <div
+          id='pre-verification-message'
+          class='text-gray-600 dark:text-gray-300 text-center'
+        >
+          Please complete the verification to view contact information.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  window.onloadTurnstileCallback = function () {
+    turnstile.render('#turnstile-container', {
+      sitekey: '0x4AAAAAAA1jHJu-9QywpvDf',
+      callback: async function (token) {
+        try {
+          const response = await fetch('/api/validate-turnstile', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ token }),
+          })
+
+          const result = await response.json()
+
+          if (result.success) {
+            // Update contact info with received data
+            const contactInfo = document.getElementById('contact-info')
+            const preVerification = document.getElementById(
+              'pre-verification-message'
+            )
+
+            // Update email link
+            const emailLink = contactInfo.querySelector(
+              'a[aria-label="Send email"]'
+            )
+            emailLink.href = `mailto:${result.data.email}`
+            emailLink.textContent = result.data.email
+
+            // Extract LinkedIn username from URL and update
+            const linkedinLink = contactInfo.querySelector(
+              'a[aria-label="LinkedIn profile"]'
+            )
+            linkedinLink.href = result.data.linkedin
+            const linkedinUsername =
+              linkedinLink.querySelector('#linkedin-username')
+            const linkedinUser = result.data.linkedin.split('/').pop()
+            linkedinUsername.textContent = `(${linkedinUser})`
+
+            // Extract GitHub username from URL and update
+            const githubLink = contactInfo.querySelector(
+              'a[aria-label="GitHub profile"]'
+            )
+            githubLink.href = result.data.github
+            const githubUsername = githubLink.querySelector('#github-username')
+            const githubUser = result.data.github.split('/').pop()
+            githubUsername.textContent = `(${githubUser})`
+
+            // Show contact info
+            contactInfo.classList.remove('hidden')
+            preVerification.classList.add('hidden')
+          }
+        } catch (error) {
+          console.error('Validation error:', error)
+        }
+      },
+    })
+  }
+</script>
+
+<script
+  src='https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback'
+  defer></script>
