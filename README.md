@@ -1,48 +1,87 @@
-# Astro Starter Kit: Basics
+# Ryan Roga Portfolio Website
 
-```sh
-npm create astro@latest -- --template basics
-```
+Welcome to the portfolio website of Ryan Roga, a full-stack web developer. This project is built using Astro 4 and TypeScript to showcase my skills and projects.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+## Purpose
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+The purpose of this website is to provide a platform for potential employers to learn more about me and my work. It is designed as a single-page application with a focus on showcasing my projects and providing a way for visitors to get in touch.
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+## Technologies Used
 
-## 🚀 Project Structure
+- **Astro 4**: A modern static site generator.
+- **TypeScript**: For type-safe JavaScript development.
+- **Tailwind CSS**: For styling and responsive design.
 
-Inside of your Astro project, you'll see the following folders and files:
+## Project Structure
+
+The project follows a structured layout to maintain organization and scalability:
 
 ```text
 /
 ├── public/
-│   └── favicon.svg
+│   └── assets/
 ├── src/
+│   ├── components/
 │   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
+│   ├── pages/
+│   ├── styles/
+│   └── utils/
 └── package.json
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## Getting Started
 
-## 🧞 Commands
+To get a local copy up and running, follow these steps:
 
-All commands are run from the root of the project, from a terminal:
+1. **Clone the repository**:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+   ```sh
+   git clone https://github.com/yourusername/ryanroga-portfolio.git
+   ```
 
-## 👀 Want to learn more?
+2. **Navigate to the project directory**:
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+   ```sh
+   cd ryanroga-portfolio
+   ```
+
+3. **Install dependencies**:
+
+   ```sh
+   npm install
+   ```
+
+4. **Run the development server**:
+
+   ```sh
+   npm run dev
+   ```
+
+5. **Build for production**:
+
+   ```sh
+   npm run build
+   ```
+
+6. **Preview the production build**:
+   ```sh
+   npm run preview
+   ```
+
+## Featured Projects
+
+- **CarEvo Logistics Web Application**: A tool for optimizing logistics and management of used vehicles.
+- **VIU Career Outlooks Web Application**: A collaboration with Vancouver Island University to aid students in career planning.
+- **Granny Go Go Trip Tracker**: A solution for modernizing trip scheduling in the medical transportation sector.
+
+## About Me
+
+I am a web developer specializing in full-stack web application development. I have experience in creating innovative solutions for business operations, logistics management, and more. I am currently seeking a full-time position within a collaborative team.
+
+## Contact
+
+Feel free to reach out via [Email](mailto:your-email@example.com) or connect with me on [LinkedIn](https://www.linkedin.com/in/yourprofile).
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
