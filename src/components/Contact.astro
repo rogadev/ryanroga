@@ -1,12 +1,18 @@
 ---
-// Move contact info to environment variables or server-side
-const contactInfo = {
-  name: 'Ryan Roga',
-  // Contact info will be loaded after CAPTCHA verification
+interface ContactInfo {
+  name: string
+  email?: string
+  linkedin?: string
+  github?: string
 }
 
-// At the top of your component
-const turnstileSiteKey = import.meta.env.TURNSTILE_SITE_KEY
+// Contact info will be loaded after CAPTCHA verification
+const contactInfo: ContactInfo = {
+  name: 'Ryan Roga',
+}
+
+// Get Turnstile site key from environment variables
+const turnstileSiteKey = import.meta.env.TURNSTILE_SITE_KEY as string
 ---
 
 <section id='contact' class='py-20 bg-gray-50 dark:bg-gray-800'>
