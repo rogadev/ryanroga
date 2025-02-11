@@ -285,34 +285,95 @@ const generatedResume = 'generatedResume'
       jobPostingForm.addEventListener('submit', async (e) => {
         e.preventDefault()
 
+        // Reset UI state
         if (terminalContent) terminalContent.innerHTML = ''
         if (terminalOutput) terminalOutput.classList.remove('hidden')
         if (resultActions) resultActions.classList.add('hidden')
         if (generatedResumeElement) {
           generatedResumeElement.innerHTML = ''
-          generatedResumeElement.classList.remove('hidden')
+          generatedResumeElement.classList.add('hidden')
         }
-        accumulatedContent = ''
 
         try {
-          addTerminalMessage('Starting resume generation with Claude...')
+          // Step 1: Validate job description
+          addTerminalMessage('Validating job description...')
+          const validateResponse = await fetch(
+            '/api/validate-job-description',
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ jobPosting: jobPostingTextarea.value }),
+            }
+          )
+
+          if (!validateResponse.ok) {
+            const error = await validateResponse.json()
+            addTerminalMessage('❌ Validation Failed')
+            addTerminalMessage(`Error: ${error.message}`)
+            addTerminalMessage(
+              "Please ensure you've provided a complete job posting."
+            )
+            return
+          }
+
+          // Step 2: Analyze job requirements
+          addTerminalMessage('✓ Job posting validated')
+          addTerminalMessage('Analyzing job requirements...')
+
+          const analyzeResponse = await fetch('/api/analyze-job-requirements', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ jobPosting: jobPostingTextarea.value }),
+          })
+
+          if (!analyzeResponse.ok) {
+            const error = await analyzeResponse.json()
+            addTerminalMessage('❌ Analysis Failed')
+            addTerminalMessage(`Error: ${error.message}`)
+            addTerminalMessage(
+              'Unable to process job requirements. Please try again.'
+            )
+            return
+          }
+
+          const { simplifiedDescription } = await analyzeResponse.json()
+          addTerminalMessage('✓ Requirements analysis complete')
+
+          // Step 3: Check conflicts
+          addTerminalMessage('Checking compatibility...')
+          const conflictResponse = await fetch('/api/check-conflicts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ simplifiedDescription }),
+          })
+
+          if (!conflictResponse.ok) {
+            const error = await conflictResponse.json()
+            addTerminalMessage('❌ Compatibility Check Failed')
+            addTerminalMessage(`Note: ${error.message}`)
+            addTerminalMessage('Process stopped due to compatibility issues.')
+            return
+          }
+
+          // Step 4: Generate resume
+          addTerminalMessage('✓ Compatibility check passed')
+          addTerminalMessage('Starting resume generation...')
+
+          if (generatedResumeElement) {
+            generatedResumeElement.classList.remove('hidden')
+          }
 
           animationInterval = setInterval(updateGeneratingMessage, 500)
 
           const response = await fetch('/api/generate-resume', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              jobPosting: jobPostingTextarea.value,
-            }),
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ jobPosting: jobPostingTextarea.value }),
           })
 
           if (!response.ok) {
             const errorData = await response.json()
-
-            if (animationInterval) clearInterval(animationInterval)
+            clearInterval(animationInterval)
 
             if (
               terminalContent?.lastElementChild?.textContent?.startsWith(
@@ -322,8 +383,10 @@ const generatedResume = 'generatedResume'
               terminalContent.removeChild(terminalContent.lastElementChild)
             }
 
+            addTerminalMessage('❌ Resume Generation Failed')
+
             if (errorData.error?.type === 'overloaded_error') {
-              addTerminalMessage('Claude AI is currently overloaded.')
+              addTerminalMessage('AI service is currently overloaded.')
               addTerminalMessage('Would you like to try using OpenAI instead?')
 
               const retryDiv = document.createElement('div')
@@ -337,38 +400,14 @@ const generatedResume = 'generatedResume'
                 </button>
               `
               terminalContent?.appendChild(retryDiv)
-
-              document
-                .getElementById('retryWithOpenAI')
-                ?.addEventListener('click', async () => {
-                  retryDiv.remove()
-                  addTerminalMessage('Retrying with OpenAI...')
-
-                  await fetch('/api/generate-resume', {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                      jobPosting: jobPostingTextarea.value,
-                      useOpenAI: true,
-                    }),
-                  })
-                })
-
-              document
-                .getElementById('cancelGeneration')
-                ?.addEventListener('click', () => {
-                  retryDiv.remove()
-                  addTerminalMessage('Generation cancelled.')
-                  if (loadingSpinner) loadingSpinner.classList.add('hidden')
-                  jobPostingTextarea.disabled = false
-                  document.body.style.cursor = 'default'
-                })
-
               return
             }
-            throw new Error('Failed to generate resume')
+
+            addTerminalMessage(
+              `Error: ${errorData.error?.message || 'Unknown error occurred'}`
+            )
+            addTerminalMessage('Please try again later.')
+            return
           }
 
           const reader = response.body?.getReader()
@@ -416,11 +455,11 @@ const generatedResume = 'generatedResume'
           }
 
           generatedContent = accumulatedContent
-        } catch (error: unknown) {
+        } catch (error) {
           if (animationInterval) {
             clearInterval(animationInterval)
-            animationInterval = undefined
           }
+
           if (
             terminalContent?.lastElementChild?.textContent?.startsWith(
               '> Generating'
@@ -428,12 +467,17 @@ const generatedResume = 'generatedResume'
           ) {
             terminalContent.removeChild(terminalContent.lastElementChild)
           }
-          const errorMessage =
-            error instanceof Error ? error.message : 'Unknown error'
-          addTerminalMessage(`Error: ${errorMessage}`)
+
+          addTerminalMessage('❌ Process Failed')
+          addTerminalMessage(
+            `An unexpected error occurred: ${error instanceof Error ? error.message : 'Unknown error'}`
+          )
+          addTerminalMessage(
+            'Please try again. If the problem persists, contact support.'
+          )
+
           if (generatedResumeElement) {
-            generatedResumeElement.innerHTML =
-              '<p class="text-red-500">Error generating content. Please try again.</p>'
+            generatedResumeElement.classList.add('hidden')
           }
         } finally {
           jobPostingTextarea.disabled = false
@@ -480,6 +524,13 @@ const generatedResume = 'generatedResume'
         terminalContainer.classList.toggle('z-50')
         terminalContainer.classList.toggle('m-4')
       })
+    }
+
+    // Add a helper function for better error messages
+    const formatErrorMessage = (error: unknown): string => {
+      if (error instanceof Error) return error.message
+      if (typeof error === 'string') return error
+      return 'An unknown error occurred'
     }
   </script>
 </section>

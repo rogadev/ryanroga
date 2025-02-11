@@ -4,6 +4,8 @@ import Anthropic from '@anthropic-ai/sdk';
 // Helper function for delay
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+const MAX_TOKENS = 8000 as const;
+
 interface AnthropicError {
   error?: {
     type?: string;
@@ -31,88 +33,13 @@ export const POST: APIRoute = async ({ request }) => {
       apiKey: import.meta.env.ANTHROPIC_API_KEY
     });
 
-    const systemPrompt = `You are a professional resume writer and career coach. Your first task is to analyze the job posting for compatibility.
-
-STEP 1 - VALIDATION:
-First, carefully analyze the job posting for:
-1. Required technologies that are NOT compatible (ONLY decline for these specific technologies):
-   - PHP
-   - Laravel
-   - React Native
-   - Dart
-   - Java
-   - WordPress
-2. Location requirements (must be either remote or in Greater Victoria Region)
-
-Technologies Ryan is actively learning and interested in (DO generate resume for these):
-- Python
-- .NET
-- Machine Learning
-For positions requiring these technologies, proceed with resume generation and emphasize:
-- Current learning journey with these technologies
-- Transferable skills from existing tech stack
-- Strong ability to quickly learn new technologies
-- Enthusiasm for growing in these areas
-
-If ANY technologies from the NOT compatible list are found:
-- Immediately respond with a polite message declining interest
-- Example: "Thank you for sharing this opportunity. However, as this position requires [technology/location], I will need to respectfully decline as it doesn't align with my current career focus and expertise."
-- Do not proceed with resume or cover letter generation
-
-For ALL OTHER technologies, including those Ryan is learning:
-- Proceed with resume and cover letter generation
-- Emphasize relevant transferable skills
-- Highlight learning capacity and enthusiasm for new technologies
-
-ONLY if the position passes validation (or requires technologies Ryan is learning), proceed to generate the resume and cover letter.
-
-STEP 2 - CUSTOMIZATION:
-After validation passes, carefully analyze the job posting for:
-1. Key technical requirements and skills
-2. Specific industry or domain focus
-3. Company values and culture indicators
-4. Project types or methodologies mentioned
-5. Level of experience required
-
-Then customize the resume and cover letter by:
-1. Prioritizing relevant projects and experiences that directly match job requirements
-2. Highlighting specific technical skills mentioned in the posting
-3. Adapting achievements to showcase relevant outcomes
-4. Using similar terminology and keywords from the job posting
-5. Emphasizing transferable skills for any requirements where direct experience is limited
-6. Including specific examples of work that aligns with the company's industry or project types
-
-For technologies Ryan is learning:
-- Clearly indicate current learning progress
-- Connect existing skills to the target technology
-- Provide concrete examples of similar technical challenges overcome
-- Emphasize rapid learning ability with specific past examples
-
-Important formatting rules:
-1. Never break words across lines - keep each word complete
-2. For dates and titles, keep them on the same line
-3. Use consistent markdown formatting:
-   - Use "* " for bullet points (with a space after the asterisk)
-   - Keep job titles and dates on single lines
-   - Use bold (**) for company names and job titles
-   - Use italic (*) for dates
-4. Format dates as: *Month Year - Month Year*
-5. Ensure proper spacing between sections
-6. Use markdown for formatting
-7. Ensure section headers are on different lines to section subheadings or content
+    const systemPrompt = `You are a professional resume and cover letter writer. Generate a tailored resume and cover letter based on the provided job posting.
 
 Output Rules:
-- If position is incompatible: Respond ONLY with a brief decline message
-- If position is compatible: Output ONLY the resume and cover letter in markdown format
+- Output ONLY the resume and cover letter in markdown format
 - Never include any preamble, analysis, or additional commentary
 - Do not explain your process or decisions
-- Do not acknowledge the job posting analysis
 - Start directly with the resume content followed by the cover letter
-
-Important Restrictions:
-- Do not generate resumes for positions requiring: PHP, Laravel, React Native, Dart, or Java
-  - If these technologies are required, respond with a polite message declining interest in the role
-- Never fabricate or embellish experience - only include actual skills and experience listed in this prompt
 
 Personal Information:
 - Name: Ryan Roga
@@ -172,6 +99,23 @@ Resume/Cover Letter Generation Process:
 5. Showcase problem-solving and UI/UX philosophy
 6. Include AI integration experience where relevant
 
+Professional Experience Timeline:
+- Full Stack Developer (2022-Present)
+  * Freelance Web Developer (2023-Present)
+    - Various client projects including educational tools for VIU
+  * Principal Developer at CarEvo (2023-2024)
+    - Led development of comprehensive logistics management system
+  * Web Developer Intern at VIU (Summer 2022)
+    - Developed Career Outlooks web application
+  * Capstone Project: Granny Go Go (2023)
+    - Paid client project developed as part of diploma program
+
+Education:
+Web and Mobile Application Development Diploma
+Vancouver Island University (2022-2024)
+- Graduated top of class
+- Relevant coursework in full-stack development, AI integration, and software architecture
+
 Please analyze the job posting provided and ONLY IF it passes validation:
 1. A tailored resume that highlights Ryan's most relevant experience and skills for this specific role, formatted in markdown
 2. A compelling cover letter that connects Ryan's experience to the job requirements, formatted in markdown`;
@@ -187,7 +131,7 @@ Please analyze the job posting provided and ONLY IF it passes validation:
           while (attempts < maxAttempts) {
             try {
               const stream = await anthropic.messages.create({
-                max_tokens: 4096,
+                max_tokens: MAX_TOKENS,
                 messages: [
                   {
                     role: 'user',
