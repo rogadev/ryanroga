@@ -35,11 +35,11 @@
   <body class='min-h-screen bg-white dark:bg-gray-900 antialiased'>
     <a
       href='#main-content'
-      class='sr-only focus:not-sr-only focus:absolute focus:p-4'
+      class='fixed top-0 left-0 -translate-y-full focus:translate-y-0 z-50 bg-white dark:bg-gray-900 p-4'
     >
       Skip to main content
     </a>
-    <main id='main-content'>
+    <main id='main-content' class='w-full'>
       <slot />
     </main>
   </body>

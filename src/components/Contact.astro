@@ -150,10 +150,12 @@ const contactInfo: ContactInfo = {
     callback: TurnstileCallback
   }
 
-  interface Window {
-    onloadTurnstileCallback: () => void
-    turnstile: {
-      render: (selector: string, options: TurnstileOptions) => void
+  declare global {
+    interface Window {
+      onloadTurnstileCallback: () => void
+      turnstile: {
+        render: (selector: string, options: TurnstileOptions) => void
+      }
     }
   }
 
@@ -191,12 +193,15 @@ const contactInfo: ContactInfo = {
       elements.preVerification.classList.add('opacity-0')
 
       setTimeout(() => {
-        elements.captchaContainer.style.display = 'none'
-        elements.preVerification.style.display = 'none'
-        elements.contactInfo.classList.remove('hidden')
-        elements.contactInfo.style.display = 'block'
+        const { contactInfo, preVerification, captchaContainer } = elements
+        if (!contactInfo || !preVerification || !captchaContainer) return
+
+        captchaContainer.style.display = 'none'
+        preVerification.style.display = 'none'
+        contactInfo.classList.remove('hidden')
+        contactInfo.style.display = 'block'
         requestAnimationFrame(() => {
-          elements.contactInfo.classList.remove('opacity-0')
+          contactInfo.classList.remove('opacity-0')
         })
       }, 300)
 

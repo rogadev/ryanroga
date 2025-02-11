@@ -68,12 +68,6 @@ const projects: readonly Project[] = [
     },
   },
 ] as const
-
-type ProjectLink = {
-  href: string
-  text: string
-  label: string
-}
 ---
 
 <section
@@ -173,10 +167,7 @@ type ProjectLink = {
         class='inline-block px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300'
         target='_blank'
         rel='noopener noreferrer'
-        aria-label='View more projects on Ryan\'
-        s
-        GitHub
-        profile'
+        aria-label="View more projects on Ryan's GitHub profile"
       >
         View More on GitHub
       </a>
