@@ -1,13 +1,7 @@
 ---
-// Remove unused imports
-// import { marked } from 'marked'
-// import Markdown from '@astrojs/markdown-component'
-
-// Add reference to generatedResume element
 const generatedResume = 'generatedResume'
 ---
 
-<!-- Add this script tag before your existing script -->
 <script is:inline src='https://cdn.jsdelivr.net/npm/marked/marked.min.js'
 ></script>
 
@@ -19,7 +13,6 @@ const generatedResume = 'generatedResume'
       Interactive Resume Experience
     </h2>
 
-    <!-- Initial Options -->
     <div class='grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12'>
       <a
         href='/RyanRoga_Resume.pdf'
@@ -60,7 +53,6 @@ const generatedResume = 'generatedResume'
       </button>
     </div>
 
-    <!-- AI Resume Generator Section (Hidden by default) -->
     <div id='aiResumeSection' class='hidden max-w-4xl mx-auto'>
       <div class='bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mb-8'>
         <h3 class='text-2xl font-semibold text-gray-900 dark:text-white mb-6'>
@@ -84,7 +76,7 @@ const generatedResume = 'generatedResume'
           </div>
           <button
             type='submit'
-            class='w-full md:w-auto px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 flex items-center justify-center gap-2'
+            class='w-full md:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 flex items-center justify-center gap-2'
           >
             <span>Generate Resume</span>
             <div class='hidden' id='loadingSpinner'>
@@ -96,7 +88,6 @@ const generatedResume = 'generatedResume'
           </button>
         </form>
 
-        <!-- Terminal Output -->
         <div
           id='terminalOutput'
           class='hidden mt-6 bg-gray-900 rounded-lg overflow-hidden'
@@ -120,41 +111,31 @@ const generatedResume = 'generatedResume'
           >
           </div>
         </div>
-
-        <!-- Result Actions -->
-        <div id='resultActions' class='mt-6 gap-4 hidden'>
-          <button
-            id='downloadBtn'
-            class='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300'
-          >
-            Download Results
-          </button>
-        </div>
       </div>
 
-      <!-- Generated Resume Display -->
       <div
         id={generatedResume}
-        class='mt-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 markdown-content dark:prose-invert max-w-none overflow-y-auto'
+        class='mt-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 markdown-content dark:prose-invert max-w-none overflow-y-auto hidden'
         style='max-height: 40vh;'
       >
-        <!-- Content will be populated by JavaScript -->
       </div>
     </div>
 
-    <!-- AI Chat Section -->
-    <!-- <div class='max-w-4xl mx-auto mt-12'>
-      <AIChatHistory />
-    </div> -->
+    <div id='resultActions' class='mt-4 text-right hidden'>
+      <button
+        id='downloadBtn'
+        class='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-lg mx-auto'
+      >
+        Download Resume
+      </button>
+    </div>
   </div>
 
   <style>
     .markdown-content {
-      /* Basic text styling */
       line-height: 1.8;
-      color: #e5e7eb; /* gray-200 - white-ish */
+      color: #e5e7eb;
 
-      /* Headers */
       h1,
       h2,
       h3,
@@ -165,7 +146,7 @@ const generatedResume = 'generatedResume'
         margin-bottom: 0.75em;
         font-weight: 700;
         line-height: 1.25;
-        color: #f3f4f6; /* gray-100 - brighter white */
+        color: #f3f4f6;
       }
 
       h1 {
@@ -178,12 +159,10 @@ const generatedResume = 'generatedResume'
         font-size: 1.25em;
       }
 
-      /* Paragraphs and spacing */
       p {
         margin-bottom: 1.25em;
       }
 
-      /* Lists */
       ul,
       ol {
         padding-left: 1.5em;
@@ -192,71 +171,54 @@ const generatedResume = 'generatedResume'
 
       li {
         margin-bottom: 0.5em;
-        color: #e5e7eb; /* gray-200 */
+        color: #e5e7eb;
       }
 
-      /* Links */
       a {
-        color: #60a5fa; /* blue-400 */
+        color: #60a5fa;
         text-decoration: none;
         transition: color 0.2s;
       }
 
       a:hover {
-        color: #93c5fd; /* blue-300 */
+        color: #93c5fd;
         text-decoration: underline;
       }
 
-      /* Blockquotes */
       blockquote {
         padding: 0.75em 1.25em;
         margin: 1.5em 0;
-        border-left: 4px solid #4b5563; /* gray-600 */
-        background-color: #374151; /* gray-700 */
-        color: #d1d5db; /* gray-300 */
+        border-left: 4px solid #4b5563;
+        background-color: #374151;
+        color: #d1d5db;
       }
 
-      /* Code blocks if any */
       code {
-        background-color: #1f2937; /* gray-800 */
-        color: #e5e7eb; /* gray-200 */
+        background-color: #1f2937;
+        color: #e5e7eb;
         padding: 0.2em 0.4em;
         border-radius: 0.25em;
       }
 
-      /* List markers */
       ul li::marker {
-        color: #60a5fa; /* blue-400 */
+        color: #60a5fa;
       }
 
-      /* Horizontal rules */
       hr {
-        border-color: #4b5563; /* gray-600 */
+        border-color: #4b5563;
       }
     }
   </style>
 
   <script>
-    // Add type declaration for marked from CDN
     declare const marked: {
       parse: (text: string) => string
     }
 
-    // Get DOM elements
     const generatedResumeElement = document.getElementById('generatedResume')
     const aiResumeBtn = document.getElementById('aiResumeBtn')
     const aiResumeSection = document.getElementById('aiResumeSection')
-
-    // Remove unused interface
-    // interface ErrorWithType {
-    //   error?: {
-    //     type?: string
-    //   }
-    // }
-
-    // Initialize animationInterval
-    let animationInterval: ReturnType<typeof setInterval> | undefined =
-      undefined
+    let animationInterval: ReturnType<typeof setInterval> | undefined
 
     if (aiResumeBtn && aiResumeSection) {
       aiResumeBtn.addEventListener('click', () => {
@@ -294,20 +256,17 @@ const generatedResume = 'generatedResume'
 
     const updateGeneratingMessage = () => {
       if (terminalContent) {
-        // Get the last line if it's a generating message
         const lastLine = terminalContent.lastElementChild
         if (lastLine?.textContent?.startsWith('> Generating')) {
-          // Update existing generating line
           lastLine.textContent = `> Generating${'.'.repeat(dotCount)}`
           lastLine.scrollIntoView({ behavior: 'smooth' })
         } else {
-          // Add new generating line
           const line = document.createElement('div')
           line.textContent = `> Generating${'.'.repeat(dotCount)}`
           terminalContent.appendChild(line)
           line.scrollIntoView({ behavior: 'smooth' })
         }
-        dotCount = (dotCount + 1) % 4 // Loop from 0 to 3
+        dotCount = (dotCount + 1) % 4
       }
     }
 
@@ -326,7 +285,6 @@ const generatedResume = 'generatedResume'
       jobPostingForm.addEventListener('submit', async (e) => {
         e.preventDefault()
 
-        // Reset displays
         if (terminalContent) terminalContent.innerHTML = ''
         if (terminalOutput) terminalOutput.classList.remove('hidden')
         if (resultActions) resultActions.classList.add('hidden')
@@ -339,7 +297,6 @@ const generatedResume = 'generatedResume'
         try {
           addTerminalMessage('Starting resume generation with Claude...')
 
-          // Start the animation
           animationInterval = setInterval(updateGeneratingMessage, 500)
 
           const response = await fetch('/api/generate-resume', {
@@ -355,10 +312,8 @@ const generatedResume = 'generatedResume'
           if (!response.ok) {
             const errorData = await response.json()
 
-            // Clear the animation interval
             if (animationInterval) clearInterval(animationInterval)
 
-            // Remove the last "Generating..." line
             if (
               terminalContent?.lastElementChild?.textContent?.startsWith(
                 '> Generating'
@@ -371,7 +326,6 @@ const generatedResume = 'generatedResume'
               addTerminalMessage('Claude AI is currently overloaded.')
               addTerminalMessage('Would you like to try using OpenAI instead?')
 
-              // Create and show retry button with OpenAI
               const retryDiv = document.createElement('div')
               retryDiv.className = 'mt-4 flex gap-4'
               retryDiv.innerHTML = `
@@ -384,14 +338,12 @@ const generatedResume = 'generatedResume'
               `
               terminalContent?.appendChild(retryDiv)
 
-              // Add event listeners for the new buttons
               document
                 .getElementById('retryWithOpenAI')
                 ?.addEventListener('click', async () => {
                   retryDiv.remove()
                   addTerminalMessage('Retrying with OpenAI...')
 
-                  // Just await the fetch without storing response
                   await fetch('/api/generate-resume', {
                     method: 'POST',
                     headers: {
@@ -419,7 +371,6 @@ const generatedResume = 'generatedResume'
             throw new Error('Failed to generate resume')
           }
 
-          // Get the response as a text stream
           const reader = response.body?.getReader()
           const decoder = new TextDecoder()
 
@@ -431,12 +382,10 @@ const generatedResume = 'generatedResume'
               const chunk = decoder.decode(value)
               accumulatedContent += chunk
 
-              // Now marked should be available globally
               if (generatedResumeElement) {
                 const htmlContent = marked.parse(accumulatedContent)
                 generatedResumeElement.innerHTML = htmlContent
 
-                // Auto-scroll if near bottom
                 const isNearBottom =
                   generatedResumeElement.scrollHeight -
                     generatedResumeElement.scrollTop -
@@ -451,9 +400,7 @@ const generatedResume = 'generatedResume'
             }
           }
 
-          // Clear the animation and show completion
           clearInterval(animationInterval)
-          // Remove the last "Generating..." line
           if (
             terminalContent?.lastElementChild?.textContent?.startsWith(
               '> Generating'
@@ -463,21 +410,17 @@ const generatedResume = 'generatedResume'
           }
           addTerminalMessage('Generation complete!')
 
-          // Show final actions
           if (resultActions) {
             resultActions.classList.remove('hidden')
             resultActions.classList.add('flex')
           }
 
-          // Store the generated content for download/view
           generatedContent = accumulatedContent
         } catch (error: unknown) {
-          // Clear the animation interval
           if (animationInterval) {
             clearInterval(animationInterval)
             animationInterval = undefined
           }
-          // Remove the last "Generating..." line
           if (
             terminalContent?.lastElementChild?.textContent?.startsWith(
               '> Generating'
@@ -493,7 +436,6 @@ const generatedResume = 'generatedResume'
               '<p class="text-red-500">Error generating content. Please try again.</p>'
           }
         } finally {
-          // Re-enable form and hide loading state
           jobPostingTextarea.disabled = false
           document.body.style.cursor = 'default'
           if (loadingSpinner) loadingSpinner.classList.add('hidden')
@@ -503,13 +445,12 @@ const generatedResume = 'generatedResume'
 
     if (downloadBtn) {
       downloadBtn.addEventListener('click', () => {
-        // Format the content for download - preserve markdown formatting
         const cleanContent = generatedContent
-          .replace(/<br\s*\/?>/gi, '\n') // Replace <br> tags with newlines
-          .replace(/<div[^>]*>(.*?)<\/div>/g, '$1') // Remove div tags but keep content
-          .replace(/<\/?[^>]+(>|$)/g, '') // Remove any other HTML tags
-          .replace(/\n\s*\n\s*\n/g, '\n\n') // Normalize multiple line breaks
-          .trim() // Remove leading/trailing whitespace
+          .replace(/<br\s*\/?>/gi, '\n')
+          .replace(/<div[^>]*>(.*?)<\/div>/g, '$1')
+          .replace(/<\/?[^>]+(>|$)/g, '')
+          .replace(/\n\s*\n\s*\n/g, '\n\n')
+          .trim()
 
         const blob = new Blob([cleanContent], { type: 'text/markdown' })
         const url = URL.createObjectURL(blob)
@@ -529,7 +470,6 @@ const generatedResume = 'generatedResume'
       })
     }
 
-    // Add maximize functionality
     const maximizeTerminal = document.getElementById('maximizeTerminal')
     const terminalContainer = document.getElementById('terminalOutput')
 

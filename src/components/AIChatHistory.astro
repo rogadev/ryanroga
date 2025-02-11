@@ -1,5 +1,5 @@
 ---
-
+import type { Visitor, ChatMessage } from '../types/chat'
 ---
 
 <div
@@ -141,17 +141,7 @@
 </div>
 
 <script>
-  interface Visitor {
-    name: string
-    email: string
-    phone: string
-  }
-
-  interface ChatMessage {
-    role: 'user' | 'assistant'
-    content: string
-    timestamp: Date
-  }
+  import type { Visitor, ChatMessage } from '../types/chat'
 
   let visitor: Visitor | null = null
   let chatHistory: ChatMessage[] = []
@@ -255,13 +245,23 @@
     })
   }
 
+  class ChatError extends Error {
+    constructor(message: string) {
+      super(message)
+      this.name = 'ChatError'
+    }
+  }
+
   async function handleChatSubmit() {
+    const messageInput = document.getElementById(
+      'messageInput'
+    ) as HTMLInputElement
+    if (!messageInput) throw new ChatError('Message input not found')
+
     updateLoadingState(true)
 
     try {
-      const input = document.getElementById('messageInput') as HTMLInputElement
-      const message = input.value.trim()
-
+      const message = messageInput.value.trim()
       if (!message) return
 
       // Add user message
@@ -273,7 +273,7 @@
 
       chatHistory.push(userMessage)
       addMessageToChat(userMessage)
-      input.value = ''
+      messageInput.value = ''
 
       // Send message to AI and get response
       const response = await fetch('/api/chat', {
@@ -305,19 +305,24 @@
       addMessageToChat(assistantMessage)
     } catch (error) {
       console.error('Failed to get AI response:', error)
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unexpected error occurred'
       alert(
-        'An error occurred while processing your request. Please try again later.'
+        `Unable to process your request: ${errorMessage}. Please try again later.`
       )
     } finally {
       updateLoadingState(false)
     }
   }
 
-  // Update event listener for chat form submission
-  document.getElementById('chatForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault()
-    await handleChatSubmit()
-  })
+  // Add type safety for event listeners
+  const chatForm = document.getElementById('chatForm')
+  if (chatForm) {
+    chatForm.addEventListener('submit', async (e: SubmitEvent) => {
+      e.preventDefault()
+      await handleChatSubmit()
+    })
+  }
 
   document
     .getElementById('endChatBtn')

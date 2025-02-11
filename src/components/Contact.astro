@@ -12,24 +12,26 @@ const contactInfo: ContactInfo = {
 }
 ---
 
-<section id='contact' class='py-20 bg-gray-50 dark:bg-gray-800'>
+<section id='contact' class='py-12 sm:py-20 bg-gray-50 dark:bg-gray-800'>
   <div class='container mx-auto px-4'>
     <div class='max-w-2xl mx-auto'>
-      <div class='text-center mb-12'>
-        <h2 class='text-4xl font-bold text-gray-900 dark:text-white mb-4'>
+      <div class='text-center mb-8 sm:mb-12'>
+        <h2
+          class='text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4'
+        >
           Get in Touch
         </h2>
-        <p class='text-xl text-gray-600 dark:text-gray-300'>
+        <p class='text-lg sm:text-xl text-gray-600 dark:text-gray-300'>
           Interested in working together? Let's connect through my contact
           information below!
         </p>
       </div>
 
       <div
-        class='max-w-md mx-auto bg-white dark:bg-gray-700 rounded-xl shadow-lg p-8'
+        class='max-w-md mx-auto bg-white dark:bg-gray-700 rounded-xl shadow-lg p-6 sm:p-8'
       >
         <h3
-          class='text-2xl font-semibold text-gray-900 dark:text-white mb-6 text-center'
+          class='text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white mb-6 text-center'
         >
           Contact Information
         </h3>
@@ -125,33 +127,117 @@ const contactInfo: ContactInfo = {
           id='captcha-container'
           class='mt-6 flex justify-center opacity-100 transition-opacity duration-300'
         >
-          <div id='turnstile-container'></div>
+          <div id='turnstile-container' aria-label='CAPTCHA verification'></div>
         </div>
 
         <!-- Show this message before verification -->
-        <div
+        <p
           id='pre-verification-message'
-          class='text-gray-600 dark:text-gray-300 text-center opacity-100 transition-opacity duration-300'
+          class='text-gray-600 dark:text-gray-300 text-center mt-4 opacity-100 transition-opacity duration-300'
         >
           Please complete the verification to view contact information.
-        </div>
+        </p>
       </div>
     </div>
   </div>
 </section>
 
 <script>
-  declare global {
-    interface Window {
-      onloadTurnstileCallback: () => void
-      turnstile: {
-        render: (
-          selector: string,
-          options: {
-            sitekey: string
-            callback: (token: string) => void
-          }
-        ) => void
+  type TurnstileCallback = (token: string) => void
+
+  interface TurnstileOptions {
+    sitekey: string
+    callback: TurnstileCallback
+  }
+
+  interface Window {
+    onloadTurnstileCallback: () => void
+    turnstile: {
+      render: (selector: string, options: TurnstileOptions) => void
+    }
+  }
+
+  const handleVerification = async (token: string): Promise<void> => {
+    try {
+      const response = await fetch('/api/validate-turnstile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+      })
+
+      const result = await response.json()
+
+      if (!result.success) return
+
+      const elements = {
+        contactInfo: document.getElementById('contact-info'),
+        preVerification: document.getElementById('pre-verification-message'),
+        captchaContainer: document.getElementById('captcha-container'),
+      }
+
+      if (
+        !elements.contactInfo ||
+        !elements.preVerification ||
+        !elements.captchaContainer
+      ) {
+        console.error('Required elements not found')
+        return
+      }
+
+      // Fade out verification elements
+      elements.captchaContainer.classList.add('opacity-0')
+      elements.preVerification.classList.add('opacity-0')
+
+      setTimeout(() => {
+        elements.captchaContainer.style.display = 'none'
+        elements.preVerification.style.display = 'none'
+        elements.contactInfo.classList.remove('hidden')
+        elements.contactInfo.style.display = 'block'
+        requestAnimationFrame(() => {
+          elements.contactInfo.classList.remove('opacity-0')
+        })
+      }, 300)
+
+      updateContactLinks(elements.contactInfo, result.data)
+    } catch (error) {
+      console.error('Validation error:', error)
+    }
+  }
+
+  const updateContactLinks = (
+    container: HTMLElement,
+    data: { email: string; linkedin: string; github: string }
+  ): void => {
+    const emailLink = container.querySelector<HTMLAnchorElement>(
+      'a[aria-label="Send email"]'
+    )
+    const linkedinLink = container.querySelector<HTMLAnchorElement>(
+      'a[aria-label="LinkedIn profile"]'
+    )
+    const githubLink = container.querySelector<HTMLAnchorElement>(
+      'a[aria-label="GitHub profile"]'
+    )
+
+    if (emailLink) {
+      emailLink.href = `mailto:${data.email}`
+      emailLink.textContent = data.email
+    }
+
+    if (linkedinLink) {
+      linkedinLink.href = data.linkedin
+      const username = linkedinLink.querySelector('#linkedin-username')
+      if (username) {
+        username.textContent = `(${data.linkedin.split('/').pop()})`
+      }
+    }
+
+    if (githubLink) {
+      githubLink.href = data.github
+      const username = githubLink.querySelector('#github-username')
+      if (username) {
+        username.textContent = `(${data.github.split('/').pop()})`
       }
     }
   }
@@ -159,92 +245,7 @@ const contactInfo: ContactInfo = {
   window.onloadTurnstileCallback = function () {
     window.turnstile.render('#turnstile-container', {
       sitekey: '0x4AAAAAAA1jHJu-9QywpvDf',
-      callback: async function (token: string) {
-        try {
-          const response = await fetch('/api/validate-turnstile', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ token }),
-          })
-
-          const result = await response.json()
-
-          if (result.success) {
-            // Get elements once
-            const contactInfo = document.getElementById('contact-info')
-            const preVerification = document.getElementById(
-              'pre-verification-message'
-            )
-            const captchaContainer =
-              document.getElementById('captcha-container')
-
-            if (!contactInfo || !preVerification || !captchaContainer) {
-              console.error('Required elements not found')
-              return
-            }
-
-            // Fade out CAPTCHA and pre-verification message
-            captchaContainer.classList.add('opacity-0')
-            preVerification.classList.add('opacity-0')
-
-            // Wait for fade out transition
-            setTimeout(() => {
-              // Hide elements completely
-              captchaContainer.style.display = 'none'
-              preVerification.style.display = 'none'
-
-              // Show and fade in contact info
-              contactInfo.classList.remove('hidden')
-              contactInfo.style.display = 'block'
-
-              // Trigger reflow
-              void contactInfo.offsetHeight
-
-              // Fade in contact info
-              contactInfo.classList.remove('opacity-0')
-            }, 300) // Match the transition duration
-
-            const emailLink = contactInfo.querySelector(
-              'a[aria-label="Send email"]'
-            ) as HTMLAnchorElement | null
-
-            if (emailLink) {
-              emailLink.href = `mailto:${result.data.email}`
-              emailLink.textContent = result.data.email
-            }
-
-            const linkedinLink = contactInfo.querySelector(
-              'a[aria-label="LinkedIn profile"]'
-            ) as HTMLAnchorElement | null
-            if (linkedinLink) {
-              linkedinLink.href = result.data.linkedin
-              const linkedinUsername =
-                linkedinLink.querySelector('#linkedin-username')
-              if (linkedinUsername) {
-                const linkedinUser = result.data.linkedin.split('/').pop()
-                linkedinUsername.textContent = `(${linkedinUser})`
-              }
-            }
-
-            const githubLink = contactInfo.querySelector(
-              'a[aria-label="GitHub profile"]'
-            ) as HTMLAnchorElement | null
-            if (githubLink) {
-              githubLink.href = result.data.github
-              const githubUsername =
-                githubLink.querySelector('#github-username')
-              if (githubUsername) {
-                const githubUser = result.data.github.split('/').pop()
-                githubUsername.textContent = `(${githubUser})`
-              }
-            }
-          }
-        } catch (error) {
-          console.error('Validation error:', error)
-        }
-      },
+      callback: handleVerification,
     })
   }
 </script>
@@ -252,4 +253,5 @@ const contactInfo: ContactInfo = {
 <script
   is:inline
   src='https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback'
+  async
   defer></script>

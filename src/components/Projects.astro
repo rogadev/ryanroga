@@ -1,17 +1,17 @@
 ---
 interface Project {
-  title: string
-  description: string
-  technologies: string[]
-  links: {
-    live?: string
-    repo?: string
-    client?: string
+  readonly title: string
+  readonly description: string
+  readonly technologies: readonly string[]
+  readonly links: {
+    readonly live?: string
+    readonly repo?: string
+    readonly client?: string
   }
-  image?: string
+  readonly image?: string
 }
 
-const projects: Project[] = [
+const projects: readonly Project[] = [
   {
     title: 'CarEvo Logistics Web Application',
     description:
@@ -68,6 +68,12 @@ const projects: Project[] = [
     },
   },
 ] as const
+
+type ProjectLink = {
+  href: string
+  text: string
+  label: string
+}
 ---
 
 <section
@@ -85,22 +91,23 @@ const projects: Project[] = [
 
     <div class='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
       {
-        projects.map((project, index) => (
+        projects.map((project, index: number) => (
           <article
             class='bg-white dark:bg-gray-700 rounded-xl shadow-lg overflow-hidden transition-transform hover:-translate-y-1 flex flex-col h-full'
-            aria-labelledby={`project-${index}`}
+            aria-labelledby={`project-${index}-title`}
           >
             {project.image && (
               <img
                 src={project.image}
-                alt={`Screenshot of ${project.title}`}
+                alt={`Screenshot of ${project.title} project`}
                 class='w-full h-48 object-cover'
+                loading='lazy'
               />
             )}
             <div class='p-6 flex flex-col flex-grow'>
               <div class='flex-grow'>
                 <h3
-                  id={`project-${index}`}
+                  id={`project-${index}-title`}
                   class='text-2xl font-bold text-gray-900 dark:text-white mb-3'
                 >
                   {project.title}
@@ -125,7 +132,7 @@ const projects: Project[] = [
                       class='text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300'
                       target='_blank'
                       rel='noopener noreferrer'
-                      aria-label={`View live demo of ${project.title}`}
+                      aria-label={`View live demo of ${project.title} project`}
                     >
                       Live Demo →
                     </a>
@@ -135,7 +142,8 @@ const projects: Project[] = [
                       href={project.links.client}
                       class='text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300'
                       target='_blank'
-                      aria-label={`View client project of ${project.title}`}
+                      rel='noopener noreferrer'
+                      aria-label={`Visit ${project.title} client website`}
                     >
                       Client →
                     </a>
@@ -146,7 +154,7 @@ const projects: Project[] = [
                       class='text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300'
                       target='_blank'
                       rel='noopener noreferrer'
-                      aria-label={`View GitHub repository of ${project.title}`}
+                      aria-label={`View ${project.title} source code on GitHub`}
                     >
                       GitHub →
                     </a>
@@ -165,6 +173,10 @@ const projects: Project[] = [
         class='inline-block px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300'
         target='_blank'
         rel='noopener noreferrer'
+        aria-label='View more projects on Ryan\'
+        s
+        GitHub
+        profile'
       >
         View More on GitHub
       </a>

@@ -2,7 +2,6 @@ import type { APIRoute } from 'astro';
 
 const SECRET_KEY = import.meta.env.TURNSTILE_SECRET_KEY;
 
-// Contact info should be stored securely (e.g., environment variables)
 const CONTACT_INFO = {
   email: 'ryanroga@gmail.com',
   linkedin: 'https://linkedin.com/in/ryanroga',
@@ -11,8 +10,7 @@ const CONTACT_INFO = {
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const data = await request.json();
-    const token = data.token;
+    const { token } = await request.json();
 
     // Validate token with Turnstile
     const result = await fetch(

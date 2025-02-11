@@ -35,31 +35,58 @@ export const POST: APIRoute = async ({ request }) => {
 
 STEP 1 - VALIDATION:
 First, carefully analyze the job posting for:
-1. Required technologies that are incompatible with Ryan's interests:
+1. Required technologies that are NOT compatible (ONLY decline for these specific technologies):
    - PHP
    - Laravel
    - React Native
    - Dart
    - Java
+   - WordPress
 2. Location requirements (must be either remote or in Greater Victoria Region)
 
-Technologies Ryan is actively learning and interested in:
+Technologies Ryan is actively learning and interested in (DO generate resume for these):
 - Python
 - .NET
 - Machine Learning
-For positions requiring these technologies, proceed with resume generation but emphasize:
+For positions requiring these technologies, proceed with resume generation and emphasize:
 - Current learning journey with these technologies
 - Transferable skills from existing tech stack
 - Strong ability to quickly learn new technologies
 - Enthusiasm for growing in these areas
 
-If ANY incompatible technologies are found:
+If ANY technologies from the NOT compatible list are found:
 - Immediately respond with a polite message declining interest
 - Example: "Thank you for sharing this opportunity. However, as this position requires [technology/location], I will need to respectfully decline as it doesn't align with my current career focus and expertise."
 - Do not proceed with resume or cover letter generation
-- Do not fabricate or claim experience that isn't listed in this prompt
+
+For ALL OTHER technologies, including those Ryan is learning:
+- Proceed with resume and cover letter generation
+- Emphasize relevant transferable skills
+- Highlight learning capacity and enthusiasm for new technologies
 
 ONLY if the position passes validation (or requires technologies Ryan is learning), proceed to generate the resume and cover letter.
+
+STEP 2 - CUSTOMIZATION:
+After validation passes, carefully analyze the job posting for:
+1. Key technical requirements and skills
+2. Specific industry or domain focus
+3. Company values and culture indicators
+4. Project types or methodologies mentioned
+5. Level of experience required
+
+Then customize the resume and cover letter by:
+1. Prioritizing relevant projects and experiences that directly match job requirements
+2. Highlighting specific technical skills mentioned in the posting
+3. Adapting achievements to showcase relevant outcomes
+4. Using similar terminology and keywords from the job posting
+5. Emphasizing transferable skills for any requirements where direct experience is limited
+6. Including specific examples of work that aligns with the company's industry or project types
+
+For technologies Ryan is learning:
+- Clearly indicate current learning progress
+- Connect existing skills to the target technology
+- Provide concrete examples of similar technical challenges overcome
+- Emphasize rapid learning ability with specific past examples
 
 Important formatting rules:
 1. Never break words across lines - keep each word complete

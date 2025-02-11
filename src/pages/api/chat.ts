@@ -6,10 +6,7 @@ const apiKey = import.meta.env.ANTHROPIC_API_KEY;
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    console.log('Retrieved API key:', apiKey);
-
     if (!apiKey) {
-      console.error('ANTHROPIC_API_KEY is not configured');
       return new Response(
         JSON.stringify({ error: 'API configuration error' }),
         { status: 500 }
@@ -23,8 +20,7 @@ export const POST: APIRoute = async ({ request }) => {
     let body;
     try {
       body = await request.json();
-    } catch (e) {
-      console.error('Failed to parse request body:', e);
+    } catch {
       return new Response(
         JSON.stringify({ error: 'Invalid JSON in request body' }),
         { status: 400 }
@@ -34,7 +30,6 @@ export const POST: APIRoute = async ({ request }) => {
     const { message, visitor } = body;
 
     if (!message || !visitor) {
-      console.error('Missing required fields:', { message: !!message, visitor: !!visitor });
       return new Response(
         JSON.stringify({
           error: 'Missing required fields',
@@ -135,8 +130,7 @@ Ryan Roga is a full-stack web developer specializing in web application developm
           }
         }
       );
-    } catch (e) {
-      console.error('Anthropic API error:', e);
+    } catch {
       return new Response(
         JSON.stringify({
           error: 'AI service error',
@@ -145,8 +139,7 @@ Ryan Roga is a full-stack web developer specializing in web application developm
         { status: 503 }
       );
     }
-  } catch (error) {
-    console.error('Unexpected error in chat endpoint:', error);
+  } catch {
     return new Response(
       JSON.stringify({
         error: 'Internal server error',
