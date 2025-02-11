@@ -1,10 +1,8 @@
 import { createAnthropic } from '@ai-sdk/anthropic';
 import type { APIRoute } from 'astro';
 import { generateText } from 'ai';
-import { loadEnv } from "vite";
 
-const env = loadEnv("production", process.cwd(), "ANTHROPIC");
-const apiKey = env.ANTHROPIC_API_KEY;
+const apiKey = import.meta.env.ANTHROPIC_API_KEY;
 
 export const POST: APIRoute = async ({ request }) => {
   try {
