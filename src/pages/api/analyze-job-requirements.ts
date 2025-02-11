@@ -9,26 +9,20 @@ export const POST: APIRoute = async ({ request }) => {
     });
 
     const response = await anthropic.messages.create({
-      messages: [
-        {
-          role: 'user',
-          content: `Extract and summarize the key technical requirements, experience needed, and job requirements from this posting:\n\n${jobPosting}`,
-        },
-      ],
+      messages: [{ role: 'user', content: jobPosting }],
       model: 'claude-3-5-sonnet-20240620',
-      max_tokens: 500,
-      system: 'You are a technical recruiter. Extract and summarize key job requirements focusing on: required technologies, years of experience, location requirements, and key responsibilities. Format the response in a clear, concise manner.',
+      max_tokens: 500
     });
 
-    return new Response(
-      JSON.stringify({
-        simplifiedDescription: response.content[0].text,
-      }),
-      {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    );
+    return new Response(JSON.stringify({
+      simplifiedDescription: response.content
+        .filter((content) => content.type === 'text')
+        .map((content) => content.text)
+        .join('')
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
   } catch (error) {
     return new Response(
       JSON.stringify({

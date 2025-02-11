@@ -134,7 +134,7 @@ const generatedResume = 'generatedResume'
   <style>
     .markdown-content {
       line-height: 1.8;
-      color: #e5e7eb;
+      @apply prose prose-lg dark:prose-invert max-w-none;
 
       h1,
       h2,
@@ -285,7 +285,13 @@ const generatedResume = 'generatedResume'
 
   <script>
     declare const marked: {
-      parse: (text: string) => string
+      parse: (
+        text: string,
+        options?: {
+          gfm: boolean
+          breaks: boolean
+        }
+      ) => string
     }
 
     const generatedResumeElement = document.getElementById('generatedResume')
@@ -507,7 +513,10 @@ const generatedResume = 'generatedResume'
               accumulatedContent += chunk
 
               if (generatedResumeElement) {
-                const htmlContent = marked.parse(accumulatedContent)
+                const htmlContent = marked.parse(accumulatedContent, {
+                  gfm: true,
+                  breaks: true,
+                })
                 generatedResumeElement.innerHTML = htmlContent
 
                 const isNearBottom =
@@ -611,13 +620,6 @@ const generatedResume = 'generatedResume'
         terminalContainer.classList.toggle('z-50')
         terminalContainer.classList.toggle('m-4')
       })
-    }
-
-    // Add a helper function for better error messages
-    const formatErrorMessage = (error: unknown): string => {
-      if (error instanceof Error) return error.message
-      if (typeof error === 'string') return error
-      return 'An unknown error occurred'
     }
   </script>
 </section>

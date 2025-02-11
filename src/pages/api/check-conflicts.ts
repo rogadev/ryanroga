@@ -41,18 +41,16 @@ For location mismatch:
 "CONFLICT: Thank you for considering my profile. As this position requires in-office presence in Toronto, and I'm only available for in-person work in the Greater Victoria Region or Nanaimo, BC, I'll respectfully decline at this time."`;
 
     const response = await anthropic.messages.create({
-      messages: [
-        {
-          role: 'user',
-          content: `Check this job description for alignment with technical preferences and location requirements:\n\n${simplifiedDescription}`,
-        },
-      ],
+      messages: [{ role: 'user', content: simplifiedDescription }],
       model: 'claude-3-5-sonnet-20240620',
       max_tokens: 250,
       system: systemPrompt,
     });
 
-    const result = response.content[0].text;
+    const result = response.content
+      .filter((content) => content.type === 'text')
+      .map((content) => content.text)
+      .join('');
     const isCompatible = result.startsWith('COMPATIBLE');
 
     if (!isCompatible) {

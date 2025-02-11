@@ -34,7 +34,10 @@ export const POST: APIRoute = async ({ request }) => {
         system: 'You are a job posting validator. Analyze if the text appears to be a genuine job posting. Look for key elements like job title, responsibilities, requirements, and company information.',
       });
 
-      const result = response.content[0].text;
+      const result = response.content
+        .filter((content) => content.type === 'text')
+        .map((content) => content.text)
+        .join('');
       const isValid = result.startsWith('VALID');
 
       if (!isValid) {
