@@ -208,6 +208,79 @@ const generatedResume = 'generatedResume'
         border-color: #4b5563;
       }
     }
+
+    /* Update synthwave terminal styles with blue theme */
+    #terminalContent {
+      text-shadow:
+        0 0 5px #3b82f6,
+        0 0 10px #3b82f6,
+        0 0 15px #3b82f6;
+      animation: glow 1s ease-in-out infinite alternate;
+    }
+
+    #terminalContent div {
+      margin-bottom: 0.5em;
+      transition: all 0.3s ease;
+    }
+
+    /* Different colors for different message types */
+    #terminalContent div:has(span.error) {
+      color: #ef4444;
+      text-shadow:
+        0 0 5px #ef4444,
+        0 0 10px #ef4444;
+    }
+
+    #terminalContent div:has(span.success) {
+      color: #22c55e;
+      text-shadow:
+        0 0 5px #22c55e,
+        0 0 10px #22c55e;
+    }
+
+    #terminalContent div:has(span.info) {
+      color: #60a5fa;
+      text-shadow:
+        0 0 5px #60a5fa,
+        0 0 10px #60a5fa;
+    }
+
+    @keyframes glow {
+      from {
+        text-shadow:
+          0 0 5px #3b82f6,
+          0 0 10px #3b82f6;
+      }
+      to {
+        text-shadow:
+          0 0 7px #3b82f6,
+          0 0 14px #3b82f6;
+      }
+    }
+
+    /* Terminal window styling with reduced glow */
+    #terminalOutput {
+      background: linear-gradient(45deg, #1a1a1a, #1e293b);
+      border: 1px solid #3b82f6;
+      box-shadow:
+        0 0 5px #3b82f6,
+        inset 0 0 5px #3b82f6;
+    }
+
+    /* Terminal header styling */
+    #terminalOutput > div:first-child {
+      background: linear-gradient(90deg, #1e293b, #1a1a1a);
+      border-bottom: 1px solid #3b82f6;
+    }
+
+    /* Terminal buttons glow effect */
+    #terminalOutput button {
+      transition: all 0.3s ease;
+    }
+
+    #terminalOutput button:hover {
+      box-shadow: 0 0 5px currentColor;
+    }
   </style>
 
   <script>
@@ -245,10 +318,13 @@ const generatedResume = 'generatedResume'
     let accumulatedContent = ''
     let dotCount = 0
 
-    const addTerminalMessage = (message: string) => {
+    const addTerminalMessage = (
+      message: string,
+      type: 'info' | 'success' | 'error' = 'info'
+    ) => {
       if (terminalContent) {
         const line = document.createElement('div')
-        line.textContent = `> ${message}`
+        line.innerHTML = `<span class="${type}">></span> ${message}`
         terminalContent.appendChild(line)
         line.scrollIntoView({ behavior: 'smooth' })
       }
@@ -296,7 +372,7 @@ const generatedResume = 'generatedResume'
 
         try {
           // Step 1: Validate job description
-          addTerminalMessage('Validating job description...')
+          addTerminalMessage('Validating job description...', 'info')
           const validateResponse = await fetch(
             '/api/validate-job-description',
             {
@@ -308,17 +384,18 @@ const generatedResume = 'generatedResume'
 
           if (!validateResponse.ok) {
             const error = await validateResponse.json()
-            addTerminalMessage('❌ Validation Failed')
-            addTerminalMessage(`Error: ${error.message}`)
+            addTerminalMessage('Validation Failed', 'error')
+            addTerminalMessage(`Error: ${error.message}`, 'error')
             addTerminalMessage(
-              "Please ensure you've provided a complete job posting."
+              "Please ensure you've provided a complete job posting.",
+              'error'
             )
             return
           }
 
           // Step 2: Analyze job requirements
-          addTerminalMessage('✓ Job posting validated')
-          addTerminalMessage('Analyzing job requirements...')
+          addTerminalMessage('Job posting validated', 'success')
+          addTerminalMessage('Analyzing job requirements...', 'info')
 
           const analyzeResponse = await fetch('/api/analyze-job-requirements', {
             method: 'POST',
@@ -328,19 +405,20 @@ const generatedResume = 'generatedResume'
 
           if (!analyzeResponse.ok) {
             const error = await analyzeResponse.json()
-            addTerminalMessage('❌ Analysis Failed')
-            addTerminalMessage(`Error: ${error.message}`)
+            addTerminalMessage('Analysis Failed', 'error')
+            addTerminalMessage(`Error: ${error.message}`, 'error')
             addTerminalMessage(
-              'Unable to process job requirements. Please try again.'
+              'Unable to process job requirements. Please try again.',
+              'error'
             )
             return
           }
 
           const { simplifiedDescription } = await analyzeResponse.json()
-          addTerminalMessage('✓ Requirements analysis complete')
+          addTerminalMessage('Requirements analysis complete', 'success')
 
           // Step 3: Check conflicts
-          addTerminalMessage('Checking compatibility...')
+          addTerminalMessage('Checking compatibility...', 'info')
           const conflictResponse = await fetch('/api/check-conflicts', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -349,15 +427,18 @@ const generatedResume = 'generatedResume'
 
           if (!conflictResponse.ok) {
             const error = await conflictResponse.json()
-            addTerminalMessage('❌ Compatibility Check Failed')
-            addTerminalMessage(`Note: ${error.message}`)
-            addTerminalMessage('Process stopped due to compatibility issues.')
+            addTerminalMessage('Compatibility Check Failed', 'error')
+            addTerminalMessage(`Note: ${error.message}`, 'error')
+            addTerminalMessage(
+              'Process stopped due to compatibility issues.',
+              'error'
+            )
             return
           }
 
           // Step 4: Generate resume
-          addTerminalMessage('✓ Compatibility check passed')
-          addTerminalMessage('Starting resume generation...')
+          addTerminalMessage('Compatibility check passed', 'success')
+          addTerminalMessage('Starting resume generation...', 'info')
 
           if (generatedResumeElement) {
             generatedResumeElement.classList.remove('hidden')
@@ -383,11 +464,14 @@ const generatedResume = 'generatedResume'
               terminalContent.removeChild(terminalContent.lastElementChild)
             }
 
-            addTerminalMessage('❌ Resume Generation Failed')
+            addTerminalMessage('Resume Generation Failed', 'error')
 
             if (errorData.error?.type === 'overloaded_error') {
-              addTerminalMessage('AI service is currently overloaded.')
-              addTerminalMessage('Would you like to try using OpenAI instead?')
+              addTerminalMessage('AI service is currently overloaded.', 'error')
+              addTerminalMessage(
+                'Would you like to try using OpenAI instead?',
+                'error'
+              )
 
               const retryDiv = document.createElement('div')
               retryDiv.className = 'mt-4 flex gap-4'
@@ -404,9 +488,10 @@ const generatedResume = 'generatedResume'
             }
 
             addTerminalMessage(
-              `Error: ${errorData.error?.message || 'Unknown error occurred'}`
+              `Error: ${errorData.error?.message || 'Unknown error occurred'}`,
+              'error'
             )
-            addTerminalMessage('Please try again later.')
+            addTerminalMessage('Please try again later.', 'error')
             return
           }
 
@@ -447,7 +532,7 @@ const generatedResume = 'generatedResume'
           ) {
             terminalContent.removeChild(terminalContent.lastElementChild)
           }
-          addTerminalMessage('Generation complete!')
+          addTerminalMessage('Generation complete!', 'success')
 
           if (resultActions) {
             resultActions.classList.remove('hidden')
@@ -468,12 +553,14 @@ const generatedResume = 'generatedResume'
             terminalContent.removeChild(terminalContent.lastElementChild)
           }
 
-          addTerminalMessage('❌ Process Failed')
+          addTerminalMessage('Process Failed', 'error')
           addTerminalMessage(
-            `An unexpected error occurred: ${error instanceof Error ? error.message : 'Unknown error'}`
+            `An unexpected error occurred: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            'error'
           )
           addTerminalMessage(
-            'Please try again. If the problem persists, contact support.'
+            'Please try again. If the problem persists, contact support.',
+            'error'
           )
 
           if (generatedResumeElement) {
