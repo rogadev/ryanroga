@@ -324,32 +324,86 @@ const generatedResume = 'generatedResume'
     let accumulatedContent = ''
     let dotCount = 0
 
-    const addTerminalMessage = (
-      message: string,
-      type: 'info' | 'success' | 'error' = 'info'
-    ) => {
-      if (terminalContent) {
-        const line = document.createElement('div')
-        line.innerHTML = `<span class="${type}">></span> ${message}`
-        terminalContent.appendChild(line)
-        line.scrollIntoView({ behavior: 'smooth' })
-      }
+    type ProcessStage = {
+      working: string
+      complete: string
     }
 
-    const updateGeneratingMessage = () => {
-      if (terminalContent) {
-        const lastLine = terminalContent.lastElementChild
-        if (lastLine?.textContent?.startsWith('> Generating')) {
-          lastLine.textContent = `> Generating${'.'.repeat(dotCount)}`
-          lastLine.scrollIntoView({ behavior: 'smooth' })
-        } else {
-          const line = document.createElement('div')
-          line.textContent = `> Generating${'.'.repeat(dotCount)}`
-          terminalContent.appendChild(line)
-          line.scrollIntoView({ behavior: 'smooth' })
-        }
-        dotCount = (dotCount + 1) % 4
+    const processStages: ProcessStage[] = [
+      {
+        working: 'Validating job description',
+        complete: 'Job posting validated ✔️',
+      },
+      {
+        working: 'Analyzing job requirements',
+        complete: 'Requirements analysis complete ✔️',
+      },
+      {
+        working: 'Checking compatibility',
+        complete: 'Compatibility check passed ✔️',
+      },
+      { working: 'Generating resume', complete: 'Generation complete! ✔️' },
+    ]
+
+    let currentStageIndex = 0
+
+    const addTerminalMessage = (
+      message: string,
+      type: 'info' | 'success' | 'error' = 'info',
+      isWorking = false
+    ) => {
+      if (!terminalContent) return
+
+      // If this is a working message, give it a special ID
+      const id = isWorking ? 'current-working-stage' : undefined
+
+      const line = document.createElement('div')
+      line.id = id
+      line.innerHTML = `<span class="${type}">></span> ${message}${isWorking ? '.'.repeat(dotCount) : ''}`
+
+      // If this is a working message, replace the existing working message
+      const existingWorking = document.getElementById('current-working-stage')
+      if (existingWorking && isWorking) {
+        existingWorking.replaceWith(line)
+      } else {
+        terminalContent.appendChild(line)
       }
+
+      line.scrollIntoView({ behavior: 'smooth' })
+    }
+
+    const updateWorkingAnimation = () => {
+      if (currentStageIndex >= processStages.length) return
+
+      const currentStage = processStages[currentStageIndex]
+      dotCount = (dotCount + 1) % 4
+      addTerminalMessage(currentStage.working, 'info', true)
+    }
+
+    const completeCurrentStage = () => {
+      if (currentStageIndex >= processStages.length) return
+
+      // Remove the working message
+      const workingMessage = document.getElementById('current-working-stage')
+      if (workingMessage) {
+        workingMessage.remove()
+      }
+
+      // Add completion message
+      const currentStage = processStages[currentStageIndex]
+      addTerminalMessage(currentStage.complete, 'success')
+      currentStageIndex++
+    }
+
+    const showError = (stage: string, error: string) => {
+      // Remove any working message
+      const workingMessage = document.getElementById('current-working-stage')
+      if (workingMessage) {
+        workingMessage.remove()
+      }
+
+      addTerminalMessage(`${stage} failed`, 'error')
+      addTerminalMessage(`Error: ${error}`, 'error')
     }
 
     if (closeTerminal) {
@@ -366,6 +420,8 @@ const generatedResume = 'generatedResume'
     if (jobPostingForm) {
       jobPostingForm.addEventListener('submit', async (e) => {
         e.preventDefault()
+        currentStageIndex = 0
+        dotCount = 0
 
         // Reset UI state
         if (terminalContent) terminalContent.innerHTML = ''
@@ -376,9 +432,14 @@ const generatedResume = 'generatedResume'
           generatedResumeElement.classList.add('hidden')
         }
 
+        let animationInterval: ReturnType<typeof setInterval>
+
         try {
-          // Step 1: Validate job description
-          addTerminalMessage('Validating job description...', 'info')
+          // Start the working animation
+          animationInterval = setInterval(updateWorkingAnimation, 500)
+
+          // Step 1: Validate
+          addTerminalMessage(processStages[0].working, 'info', true)
           const validateResponse = await fetch(
             '/api/validate-job-description',
             {
@@ -389,20 +450,16 @@ const generatedResume = 'generatedResume'
           )
 
           if (!validateResponse.ok) {
+            clearInterval(animationInterval)
             const error = await validateResponse.json()
-            addTerminalMessage('Validation Failed', 'error')
-            addTerminalMessage(`Error: ${error.message}`, 'error')
-            addTerminalMessage(
-              "Please ensure you've provided a complete job posting.",
-              'error'
-            )
+            showError('Validation', error.message)
             return
           }
 
-          // Step 2: Analyze job requirements
-          addTerminalMessage('Job posting validated', 'success')
-          addTerminalMessage('Analyzing job requirements...', 'info')
+          completeCurrentStage()
 
+          // Step 2: Analyze job requirements
+          addTerminalMessage(processStages[1].working, 'info', true)
           const analyzeResponse = await fetch('/api/analyze-job-requirements', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -411,20 +468,15 @@ const generatedResume = 'generatedResume'
 
           if (!analyzeResponse.ok) {
             const error = await analyzeResponse.json()
-            addTerminalMessage('Analysis Failed', 'error')
-            addTerminalMessage(`Error: ${error.message}`, 'error')
-            addTerminalMessage(
-              'Unable to process job requirements. Please try again.',
-              'error'
-            )
+            showError('Analysis', error.message)
             return
           }
 
           const { simplifiedDescription } = await analyzeResponse.json()
-          addTerminalMessage('Requirements analysis complete', 'success')
+          completeCurrentStage()
 
           // Step 3: Check conflicts
-          addTerminalMessage('Checking compatibility...', 'info')
+          addTerminalMessage(processStages[2].working, 'info', true)
           const conflictResponse = await fetch('/api/check-conflicts', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -433,24 +485,20 @@ const generatedResume = 'generatedResume'
 
           if (!conflictResponse.ok) {
             const error = await conflictResponse.json()
-            addTerminalMessage('Compatibility Check Failed', 'error')
-            addTerminalMessage(`Note: ${error.message}`, 'error')
-            addTerminalMessage(
-              'Process stopped due to compatibility issues.',
-              'error'
-            )
+            showError('Compatibility Check', error.message)
             return
           }
 
+          completeCurrentStage()
+
           // Step 4: Generate resume
-          addTerminalMessage('Compatibility check passed', 'success')
-          addTerminalMessage('Starting resume generation...', 'info')
+          addTerminalMessage(processStages[3].working, 'info', true)
 
           if (generatedResumeElement) {
             generatedResumeElement.classList.remove('hidden')
           }
 
-          animationInterval = setInterval(updateGeneratingMessage, 500)
+          animationInterval = setInterval(updateWorkingAnimation, 500)
 
           const response = await fetch('/api/generate-resume', {
             method: 'POST',
@@ -470,7 +518,10 @@ const generatedResume = 'generatedResume'
               terminalContent.removeChild(terminalContent.lastElementChild)
             }
 
-            addTerminalMessage('Resume Generation Failed', 'error')
+            showError(
+              'Resume Generation',
+              errorData.error?.message || 'Unknown error'
+            )
 
             if (errorData.error?.type === 'overloaded_error') {
               addTerminalMessage('AI service is currently overloaded.', 'error')
@@ -493,10 +544,6 @@ const generatedResume = 'generatedResume'
               return
             }
 
-            addTerminalMessage(
-              `Error: ${errorData.error?.message || 'Unknown error occurred'}`,
-              'error'
-            )
             addTerminalMessage('Please try again later.', 'error')
             return
           }
@@ -541,14 +588,14 @@ const generatedResume = 'generatedResume'
           ) {
             terminalContent.removeChild(terminalContent.lastElementChild)
           }
-          addTerminalMessage('Generation complete!', 'success')
+          completeCurrentStage()
+
+          generatedContent = accumulatedContent
 
           if (resultActions) {
             resultActions.classList.remove('hidden')
             resultActions.classList.add('flex')
           }
-
-          generatedContent = accumulatedContent
         } catch (error) {
           if (animationInterval) {
             clearInterval(animationInterval)
@@ -562,10 +609,9 @@ const generatedResume = 'generatedResume'
             terminalContent.removeChild(terminalContent.lastElementChild)
           }
 
-          addTerminalMessage('Process Failed', 'error')
-          addTerminalMessage(
-            `An unexpected error occurred: ${error instanceof Error ? error.message : 'Unknown error'}`,
-            'error'
+          showError(
+            'Process',
+            error instanceof Error ? error.message : 'Unknown error'
           )
           addTerminalMessage(
             'Please try again. If the problem persists, contact support.',
