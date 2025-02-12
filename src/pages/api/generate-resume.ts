@@ -158,6 +158,11 @@ export const POST: APIRoute = async ({ request }) => {
             if (error && typeof error === 'object') {
               const anthropicError = error as AnthropicError;
               if (anthropicError.error?.type === 'overloaded_error') {
+                // First send a message to the terminal
+                controller.enqueue(new TextEncoder().encode('\n\n⚠️ Claude AI is currently overloaded.'));
+                controller.enqueue(new TextEncoder().encode('\n\nStream disconnected due to high demand.'));
+                controller.close();
+
                 return new Response(JSON.stringify({
                   error: {
                     type: 'overloaded_error',

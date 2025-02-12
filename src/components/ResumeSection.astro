@@ -518,32 +518,51 @@ const generatedResume = 'generatedResume'
               terminalContent.removeChild(terminalContent.lastElementChild)
             }
 
-            showError(
-              'Resume Generation',
-              errorData.error?.message || 'Unknown error'
-            )
-
             if (errorData.error?.type === 'overloaded_error') {
-              addTerminalMessage('AI service is currently overloaded.', 'error')
+              showError(
+                'Resume Generation',
+                'Claude AI is currently overloaded'
+              )
               addTerminalMessage(
-                'Would you like to try using OpenAI instead?',
+                'Stream disconnected due to high demand',
                 'error'
               )
+              addTerminalMessage('Please try again in a few minutes', 'info')
+              addTerminalMessage('You can:', 'info')
 
-              const retryDiv = document.createElement('div')
-              retryDiv.className = 'mt-4 flex gap-4'
-              retryDiv.innerHTML = `
-                <button id="retryWithOpenAI" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300">
-                  Try with OpenAI
+              const optionsDiv = document.createElement('div')
+              optionsDiv.className = 'mt-4 flex flex-col gap-2'
+              optionsDiv.innerHTML = `
+                <button id="retryGeneration" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300">
+                  Try Again
                 </button>
                 <button id="cancelGeneration" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-300">
                   Cancel
                 </button>
               `
-              terminalContent?.appendChild(retryDiv)
+
+              terminalContent?.appendChild(optionsDiv)
+
+              document
+                .getElementById('retryGeneration')
+                ?.addEventListener('click', () => {
+                  jobPostingForm?.dispatchEvent(new Event('submit'))
+                })
+
+              document
+                .getElementById('cancelGeneration')
+                ?.addEventListener('click', () => {
+                  if (terminalOutput) terminalOutput.classList.add('hidden')
+                  if (terminalContent) terminalContent.innerHTML = ''
+                })
+
               return
             }
 
+            showError(
+              'Resume Generation',
+              errorData.error?.message || 'Unknown error'
+            )
             addTerminalMessage('Please try again later.', 'error')
             return
           }
