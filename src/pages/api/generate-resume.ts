@@ -6,11 +6,11 @@ const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 const MAX_TOKENS = 8000 as const;
 
-interface AnthropicError {
+type AnthropicError = {
   error?: {
     type?: string;
   };
-}
+};
 
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -167,32 +167,29 @@ export const POST: APIRoute = async ({ request }) => {
 
               // If it's the last attempt, propagate the error
               if (attempts === maxAttempts) {
-                if (typeof error === 'object' && error !== null) {
+                if (error && typeof error === 'object') {
                   const anthropicError = error as AnthropicError;
                   if (anthropicError.error?.type === 'overloaded_error') {
-                    const errorResponse = {
+                    return new Response(JSON.stringify({
                       error: {
                         type: 'overloaded_error',
                         message: 'Claude AI is currently overloaded.'
                       }
-                    };
-                    return new Response(JSON.stringify(errorResponse), {
+                    }), {
                       status: 503,
                       headers: {
                         'Content-Type': 'application/json'
                       }
                     });
-                  } else {
-                    const errorMessage = '\n\nError: Failed to complete the generation. Please try again.';
-                    controller.enqueue(new TextEncoder().encode(errorMessage));
-                    controller.close();
-                    return;
                   }
+                  controller.enqueue(new TextEncoder().encode('\n\nError: Failed to complete the generation. Please try again.'));
+                  controller.close();
+                  return;
                 }
               }
 
               // If it's an overloaded error, wait before retrying
-              if (typeof error === 'object' && error !== null) {
+              if (error && typeof error === 'object') {
                 const anthropicError = error as AnthropicError;
                 if (anthropicError.error?.type === 'overloaded_error') {
                   const delay = baseDelay * Math.pow(2, attempts - 1);

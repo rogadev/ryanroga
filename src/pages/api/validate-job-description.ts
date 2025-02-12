@@ -84,7 +84,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
 };
 
-const formatErrorMessage = (error: unknown): string => {
+const formatErrorMessage = (error: Error | string | unknown): string => {
   if (error instanceof Error) return error.message;
   if (typeof error === 'string') return error;
   return 'Unknown error occurred';

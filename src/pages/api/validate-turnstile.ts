@@ -6,7 +6,7 @@ const CONTACT_INFO = {
   email: 'ryanroga@gmail.com',
   linkedin: 'https://linkedin.com/in/ryanroga',
   github: 'https://github.com/rogadev'
-};
+} as const;
 
 export const POST: APIRoute = async ({ request }) => {
   try {

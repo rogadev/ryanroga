@@ -13,19 +13,14 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    const anthropic = createAnthropic({
-      apiKey,
-    });
+    const anthropic = createAnthropic({ apiKey });
 
-    let body;
-    try {
-      body = await request.json();
-    } catch {
+    const body = await request.json().catch(() => {
       return new Response(
         JSON.stringify({ error: 'Invalid JSON in request body' }),
         { status: 400 }
       );
-    }
+    });
 
     const { message, visitor } = body;
 
@@ -39,14 +34,13 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    try {
-      const { text } = await generateText({
-        model: anthropic('claude-3-sonnet-20240229'),
-        messages: [{
-          role: 'user',
-          content: message
-        }],
-        system: `You are an AI assistant providing information about Ryan Roga. When users ask questions using "you" (e.g., "Do you know Vue?" or "What's your experience?"), interpret and answer these as questions about Ryan, not about yourself as an AI. Always refer to Ryan in the third person. For example:
+    const { text } = await generateText({
+      model: anthropic('claude-3-sonnet-20240229'),
+      messages: [{
+        role: 'user',
+        content: message
+      }],
+      system: `You are an AI assistant providing information about Ryan Roga. When users ask questions using "you" (e.g., "Do you know Vue?" or "What's your experience?"), interpret and answer these as questions about Ryan, not about yourself as an AI. Always refer to Ryan in the third person. For example:
 - "Do you know Vue?" should be interpreted as "Does Ryan know Vue?" and answered as "Ryan knows Vue."
 - "What's your experience?" should be interpreted as "What's Ryan's experience?" and answered as "Ryan has experience in..."
 - "Can you work remotely?" should be interpreted as "Can Ryan work remotely?" and answered as "Ryan can work remotely."
@@ -119,18 +113,7 @@ Ryan Roga is a full-stack web developer specializing in web application developm
 - Prioritizes user-centered design and robust backend architectures to enhance performance.
 - Proficient in frameworks like Nuxt 3, Vue 3, TypeScript, and TailwindCSS.
 - Seeks collaborative environments to contribute to impactful projects.`
-      });
-
-      return new Response(
-        JSON.stringify({ message: text }),
-        {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-    } catch {
+    }).catch(() => {
       return new Response(
         JSON.stringify({
           error: 'AI service error',
@@ -138,8 +121,18 @@ Ryan Roga is a full-stack web developer specializing in web application developm
         }),
         { status: 503 }
       );
-    }
-  } catch {
+    });
+
+    return new Response(
+      JSON.stringify({ message: text }),
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+  } catch (error) {
     return new Response(
       JSON.stringify({
         error: 'Internal server error',
