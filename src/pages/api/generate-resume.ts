@@ -30,10 +30,14 @@ export const POST: APIRoute = async ({ request }) => {
       apiKey: import.meta.env.ANTHROPIC_API_KEY
     });
 
-    const systemPrompt = `You are a professional resume and cover letter writer. Generate a tailored resume and cover letter based on the provided job posting.
+    const systemPrompt = `You are a professional resume and cover letter writer. Generate a brief, impactful resume and cover letter based on the provided job posting. Keep both documents concise and focused on the most relevant details, as the generation must complete within 15 seconds.
 
     Output Rules:
     - Output ONLY the resume and cover letter using standard markdown syntax
+    - Keep both documents brief and focused
+    - Aim for maximum impact with minimal content
+    - Resume should be 1 page maximum
+    - Cover letter should be 2-3 short paragraphs maximum
     - Use # for main headings (e.g., # Resume, # Cover Letter)
     - Use ## for section headings (e.g., ## Experience, ## Skills)
     - Use * for bullet points
