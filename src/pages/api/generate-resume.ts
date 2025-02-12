@@ -1,9 +1,6 @@
 import type { APIRoute } from 'astro';
 import Anthropic from '@anthropic-ai/sdk';
 
-// Helper function for delay
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
 const MAX_TOKENS = 8000 as const;
 
 type AnthropicError = {
@@ -131,73 +128,52 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response(
       new ReadableStream({
         async start(controller) {
-          let attempts = 0;
-          const maxAttempts = 3;
-          const baseDelay = 1000; // 1 second
-
-          while (attempts < maxAttempts) {
-            try {
-              const stream = await anthropic.messages.create({
-                max_tokens: MAX_TOKENS,
-                messages: [
-                  {
-                    role: 'user',
-                    content: `Please create a tailored resume and cover letter for this job posting:\n\n${jobPosting}`
-                  }
-                ],
-                model: 'claude-3-5-sonnet-20240620',
-                stream: true,
-                system: systemPrompt
-              });
-
-              // Process the stream
-              for await (const chunk of stream) {
-                if (chunk.type === 'content_block_delta' && 'text' in chunk.delta) {
-                  controller.enqueue(new TextEncoder().encode(chunk.delta.text));
+          try {
+            const stream = await anthropic.messages.create({
+              max_tokens: MAX_TOKENS,
+              messages: [
+                {
+                  role: 'user',
+                  content: `Please create a tailored resume and cover letter for this job posting:\n\n${jobPosting}`
                 }
-              }
+              ],
+              model: 'claude-3-5-sonnet-20240620',
+              stream: true,
+              system: systemPrompt
+            });
 
-              // If we get here, streaming completed successfully
-              controller.close();
-              return;
-
-            } catch (error) {
-              attempts++;
-              console.error(`Attempt ${attempts} failed:`, error);
-
-              // If it's the last attempt, propagate the error
-              if (attempts === maxAttempts) {
-                if (error && typeof error === 'object') {
-                  const anthropicError = error as AnthropicError;
-                  if (anthropicError.error?.type === 'overloaded_error') {
-                    return new Response(JSON.stringify({
-                      error: {
-                        type: 'overloaded_error',
-                        message: 'Claude AI is currently overloaded.'
-                      }
-                    }), {
-                      status: 503,
-                      headers: {
-                        'Content-Type': 'application/json'
-                      }
-                    });
-                  }
-                  controller.enqueue(new TextEncoder().encode('\n\nError: Failed to complete the generation. Please try again.'));
-                  controller.close();
-                  return;
-                }
-              }
-
-              // If it's an overloaded error, wait before retrying
-              if (error && typeof error === 'object') {
-                const anthropicError = error as AnthropicError;
-                if (anthropicError.error?.type === 'overloaded_error') {
-                  const delay = baseDelay * Math.pow(2, attempts - 1);
-                  controller.enqueue(new TextEncoder().encode(`\n\nService busy, retrying in ${delay / 1000} seconds...\n`));
-                  await sleep(delay);
-                }
+            // Process the stream
+            for await (const chunk of stream) {
+              if (chunk.type === 'content_block_delta' && 'text' in chunk.delta) {
+                controller.enqueue(new TextEncoder().encode(chunk.delta.text));
               }
             }
+
+            controller.close();
+            return;
+
+          } catch (error) {
+            console.error('Generation failed:', error);
+
+            if (error && typeof error === 'object') {
+              const anthropicError = error as AnthropicError;
+              if (anthropicError.error?.type === 'overloaded_error') {
+                return new Response(JSON.stringify({
+                  error: {
+                    type: 'overloaded_error',
+                    message: 'Claude AI is currently overloaded. Please try again in a few minutes.'
+                  }
+                }), {
+                  status: 503,
+                  headers: {
+                    'Content-Type': 'application/json'
+                  }
+                });
+              }
+            }
+            controller.enqueue(new TextEncoder().encode('\n\nError: Failed to complete the generation. Please try again.'));
+            controller.close();
+            return;
           }
         },
 
@@ -215,12 +191,14 @@ export const POST: APIRoute = async ({ request }) => {
     );
 
   } catch (error: unknown) {
-    console.error('API error:', error);
+    console.error('Resume generation error:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return new Response(
       JSON.stringify({
-        error: 'Failed to generate resume',
-        details: errorMessage
+        error: {
+          message: 'Failed to generate resume',
+          details: errorMessage
+        }
       }),
       {
         status: 500,
