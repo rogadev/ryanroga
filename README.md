@@ -74,6 +74,16 @@ To get a local copy up and running, follow these steps:
 - **VIU Career Outlooks Web Application**: A collaboration with Vancouver Island University to aid students in career planning.
 - **Granny Go Go Trip Tracker**: A solution for modernizing trip scheduling in the medical transportation sector.
 
+## Personal Projects & Experiments
+
+In addition to client work, the portfolio showcases several personal projects and experiments:
+
+- **Password Generator**: A customizable tool for generating secure passwords with shareable configurations.
+- **Digital Mushrooms**: A web recreation of a physical LED art installation that toured festivals across BC.
+- **Visual Experiments**: Creative visual explorations using Next.js and Three.js.
+- **3D Map Explorer**: A custom 3D mapping tool built with Mapbox.
+- **Window Cleaning Evaluator**: One of my earliest web tools, still used professionally today.
+
 ## About Me
 
 I am a web developer specializing in full-stack web application development. I have experience in creating innovative solutions for business operations, logistics management, and more. I am currently seeking a full-time position within a collaborative team.

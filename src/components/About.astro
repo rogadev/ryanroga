@@ -1,99 +1,108 @@
 ---
-type SkillCategories = {
-  languages: string[]
-  frameworks: string[]
-  tools: string[]
-  additional: string[]
+interface SkillCategory {
+  name: string
+  skills: string[]
 }
 
-const skills: SkillCategories = {
-  languages: ['TypeScript', 'JavaScript', 'HTML'],
-  frameworks: ['Vue.js', 'Nuxt.js', 'Svelte', 'Astro', 'Node.js', 'Express'],
-  tools: [
-    'Tailwind CSS',
-    'Prisma',
-    'Supabase',
-    'OpenAI API',
-    'Git',
-    'PostgreSQL',
-  ],
-  additional: ['React', 'Next.js', 'AWS', 'Docker', 'Python', 'MongoDB'],
-}
+const skillCategories: SkillCategory[] = [
+  {
+    name: 'Front-End Development',
+    skills: [
+      'TypeScript',
+      'JavaScript',
+      'HTML/CSS',
+      'Vue.js',
+      'React',
+      'Svelte',
+      'Tailwind CSS',
+    ],
+  },
+  {
+    name: 'Back-End Development',
+    skills: ['Node.js', 'Express', 'PostgreSQL', 'REST APIs'],
+  },
+  {
+    name: 'Full-Stack Frameworks',
+    skills: ['Nuxt.js', 'Next.js', 'Astro', 'SvelteKit'],
+  },
+  {
+    name: 'Tools & Infrastructure',
+    skills: [
+      'Git',
+      'Supabase',
+      'Prisma',
+      'OpenAI API',
+      'Google Maps API',
+      'CI/CD',
+    ],
+  },
+]
 ---
 
 <section
   id='about'
-  class='py-12 sm:py-20 bg-white dark:bg-gray-900'
+  class='py-16 sm:py-24 bg-white dark:bg-gray-900'
   aria-labelledby='about-heading'
 >
   <div class='container mx-auto px-4'>
     <div class='max-w-4xl mx-auto'>
       <h2
         id='about-heading'
-        class='text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6 sm:mb-8 text-center'
+        class='text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-8 text-center'
       >
         About Me
       </h2>
 
-      <div
-        class='mb-8 sm:mb-12 text-base sm:text-lg text-gray-600 dark:text-gray-300 space-y-4'
-      >
-        <p>
-          🌐 I am a web developer specializing in full-stack web application
-          development, with a proven track record of delivering complex business
-          solutions. My collaborative approach has helped diverse clients
-          transform their requirements into functional, scalable applications.
+      <div class='prose prose-lg dark:prose-invert max-w-none mb-12'>
+        <p class='lead text-xl text-gray-700 dark:text-gray-200 mb-4'>
+          I am a full-stack web developer with a proven track record of
+          delivering complex business solutions that drive operational
+          efficiency and growth.
         </p>
-        <p>
-          🚀 My expertise spans business operations, logistics management, task
-          automation, and AI integration. I prioritize user-centered design
-          principles, creating streamlined interfaces backed by robust
-          architectures that deliver exceptional performance.
+
+        <p class='text-gray-600 dark:text-gray-300 mb-4'>
+          My expertise lies in developing scalable web applications that address
+          real business challenges. Through collaborative engagement with
+          diverse clients, I transform requirements into functional solutions
+          that enhance business operations, optimize logistics management,
+          automate routine tasks, and integrate AI-powered capabilities.
         </p>
-        <p>
-          🔍 Currently seeking a full-time position within a collaborative team
-          where I can leverage my skills and drive innovation. I'm passionate
-          about continuous learning and ready to tackle challenging projects
-          that make a real impact.
+
+        <p class='text-gray-600 dark:text-gray-300'>
+          With a focus on user-centered design principles, I create intuitive
+          interfaces backed by robust architectures. I'm currently seeking a
+          full-time position with a collaborative team where I can leverage my
+          technical skills to drive innovation while continuing to grow
+          professionally.
         </p>
       </div>
 
-      <div
-        class='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8'
-      >
-        {
-          Object.entries(skills).map(([category, skillList]) => (
-            <div class='space-y-4'>
-              <h3
-                id={`${category}-heading`}
-                class='text-lg sm:text-xl font-semibold text-blue-600 dark:text-blue-400 capitalize'
-              >
-                {category}
-              </h3>
-              <ul class='space-y-2' aria-labelledby={`${category}-heading`}>
-                {skillList.map((skill) => (
-                  <li class='flex items-center text-gray-700 dark:text-gray-300'>
-                    <svg
-                      class='w-4 h-4 mr-2 text-green-500'
-                      fill='none'
-                      stroke='currentColor'
-                      viewBox='0 0 24 24'
-                      aria-hidden='true'
-                    >
-                      <path
-                        stroke-linecap='round'
-                        stroke-linejoin='round'
-                        stroke-width='2'
-                        d='M5 13l4 4L19 7'
-                      />
-                    </svg>
-                    <span>{skill}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))
-        }
+      <div class='mb-12'>
+        <h3
+          class='text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-6'
+        >
+          Technical Expertise
+        </h3>
+
+        <div class='grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10'>
+          {
+            skillCategories.map((category) => (
+              <div>
+                <h4 class='text-xl font-medium text-blue-600 dark:text-blue-400 mb-3 pb-2 border-b border-gray-200 dark:border-gray-700'>
+                  {category.name}
+                </h4>
+                <div class='grid grid-cols-2 gap-y-2 gap-x-4'>
+                  {category.skills.map((skill) => (
+                    <div class='flex items-center text-gray-700 dark:text-gray-300'>
+                      <span class='w-1.5 h-1.5 bg-blue-500 rounded-full mr-2.5 flex-shrink-0' />
+                      <span>{skill}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))
+          }
+        </div>
       </div>
     </div>
   </div>

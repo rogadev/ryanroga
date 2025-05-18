@@ -1,0 +1,93 @@
+---
+import type { Client } from '../types/client'
+import { clients } from '../data/clients'
+
+// Specify client order
+const desiredOrder = ['telus', 'carevo', 'granny-go-go', 'viu', 'mossaway']
+
+// Create ordered array of clients based on desired order
+const clientsArray: Client[] = desiredOrder.map((slug) => clients[slug])
+---
+
+<section
+  id='clients'
+  class='py-20 bg-white dark:bg-gray-900'
+  aria-labelledby='clients-heading'
+>
+  <div class='container mx-auto px-4'>
+    <h2
+      id='clients-heading'
+      class='text-4xl font-bold text-gray-900 dark:text-white mb-8 text-center'
+    >
+      Clients & Employers
+    </h2>
+
+    <div class='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
+      {
+        clientsArray.map((client) => (
+          <a
+            href={`/client/${client.slug}`}
+            class='group'
+            aria-label={`View ${client.name} project details`}
+          >
+            <article class='bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden transition-all duration-300 h-full flex flex-col border border-gray-100 dark:border-gray-700 group-hover:shadow-lg group-hover:border-blue-200 dark:group-hover:border-blue-900'>
+              <div class='p-4 flex items-center justify-center h-32 bg-gray-50 dark:bg-gray-750'>
+                <img
+                  src={client.logo}
+                  alt={`${client.name} logo`}
+                  class='max-h-24 max-w-[100%] object-contain rounded-md'
+                  loading='lazy'
+                />
+              </div>
+              <div class='p-6 flex flex-col flex-grow'>
+                <div class='flex justify-between items-center mb-3'>
+                  <h3 class='text-2xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors'>
+                    {client.name}
+                  </h3>
+                  <div class='text-sm font-medium bg-gray-100 dark:bg-gray-700 rounded flex flex-col items-center min-w-[4rem] overflow-hidden'>
+                    {client.years?.map((year) => (
+                      <span class='px-2 py-0.5 text-gray-600 dark:text-gray-300 w-full text-center'>
+                        {year}
+                      </span>
+                    ))}
+                    {client.isCurrent && (
+                      <span class='text-xs font-medium bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200 w-full text-center py-0.5 mt-0.5'>
+                        Active
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <p class='text-gray-700 dark:text-gray-300 mb-3 text-sm'>
+                  <span class='font-semibold'>Industry:</span> {client.industry}
+                </p>
+                <p class='text-gray-600 dark:text-gray-400 mb-4 flex-grow'>
+                  {client.description}
+                </p>
+                <div class='flex items-center justify-between mt-auto'>
+                  <span class='text-blue-600 dark:text-blue-400 font-medium group-hover:underline'>
+                    {client.projectTitle}
+                  </span>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    class='h-5 w-5 text-blue-600 dark:text-blue-400 transform group-hover:translate-x-1 transition-transform'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    stroke='currentColor'
+                  >
+                    <path
+                      stroke-linecap='round'
+                      stroke-linejoin='round'
+                      stroke-width='2'
+                      d='M14 5l7 7m0 0l-7 7m7-7H3'
+                    />
+                  </svg>
+                </div>
+              </div>
+            </article>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>
