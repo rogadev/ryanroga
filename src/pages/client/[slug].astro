@@ -1,0 +1,169 @@
+---
+import ClientLayout from '../../layouts/ClientLayout.astro'
+import { clients } from '../../data/clients'
+import type { Client } from '../../types/client'
+
+export function getStaticPaths() {
+  return Object.keys(clients).map((slug) => ({
+    params: { slug },
+  }))
+}
+
+const { slug } = Astro.params
+const client = clients[slug as string]
+
+if (!client) {
+  return Astro.redirect('/404')
+}
+---
+
+<ClientLayout
+  title={`${client.name} Project | Ryan Roga`}
+  description={`Learn about my work with ${client.name} - ${client.projectTitle}`}
+>
+  <div class='max-w-4xl mx-auto'>
+    <div
+      class='bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden mb-10'
+    >
+      <div class='p-8 flex flex-col md:flex-row items-center gap-8'>
+        <div
+          class='bg-gray-50 dark:bg-gray-750 p-6 rounded-lg flex items-center justify-center w-full md:w-1/3'
+        >
+          <img
+            src={client.logo}
+            alt={`${client.name} logo`}
+            class='max-h-24 max-w-full object-contain'
+          />
+        </div>
+        <div class='w-full md:w-2/3'>
+          <h1
+            class='text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3'
+          >
+            {client.name}
+          </h1>
+          <p class='text-gray-700 dark:text-gray-300 text-sm mb-3'>
+            <span class='font-semibold'>Industry:</span>
+            {client.industry}
+          </p>
+          {
+            client.companySize && (
+              <p class='text-gray-700 dark:text-gray-300 text-sm mb-3'>
+                <span class='font-semibold'>Company Size:</span>{' '}
+                {client.companySize}
+              </p>
+            )
+          }
+          {
+            client.website && (
+              <p class='text-gray-700 dark:text-gray-300 text-sm mb-3'>
+                <a
+                  href={client.website}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  class='text-blue-600 dark:text-blue-400 hover:underline'
+                >
+                  Visit Website →
+                </a>
+              </p>
+            )
+          }
+          <p class='text-gray-600 dark:text-gray-400'>
+            {client.description}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class='space-y-12'>
+      <section>
+        <h2 class='text-2xl font-bold text-gray-900 dark:text-white mb-4'>
+          {client.projectTitle}
+        </h2>
+        <p class='text-gray-600 dark:text-gray-400 mb-6'>
+          {client.projectDescription}
+        </p>
+      </section>
+
+      <section>
+        <h2 class='text-2xl font-bold text-gray-900 dark:text-white mb-4'>
+          Technologies Used
+        </h2>
+        <div class='flex flex-wrap gap-2'>
+          {
+            client.technologies.map((tech) => (
+              <span class='px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg text-sm'>
+                {tech}
+              </span>
+            ))
+          }
+        </div>
+      </section>
+
+      {
+        client.projectChallenges && (
+          <section>
+            <h2 class='text-2xl font-bold text-gray-900 dark:text-white mb-4'>
+              Project Challenges
+            </h2>
+            <ul class='list-disc pl-5 space-y-2 text-gray-600 dark:text-gray-400'>
+              {client.projectChallenges.map((challenge) => (
+                <li>{challenge}</li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      {
+        client.projectSolution && (
+          <section>
+            <h2 class='text-2xl font-bold text-gray-900 dark:text-white mb-4'>
+              Solution
+            </h2>
+            <p class='text-gray-600 dark:text-gray-400'>
+              {client.projectSolution}
+            </p>
+          </section>
+        )
+      }
+
+      {
+        client.projectOutcome && (
+          <section>
+            <h2 class='text-2xl font-bold text-gray-900 dark:text-white mb-4'>
+              Outcome
+            </h2>
+            <p class='text-gray-600 dark:text-gray-400'>
+              {client.projectOutcome}
+            </p>
+          </section>
+        )
+      }
+
+      {
+        client.screenshots && client.screenshots.length > 0 && (
+          <section>
+            <h2 class='text-2xl font-bold text-gray-900 dark:text-white mb-4'>
+              Project Gallery
+            </h2>
+            <div class='grid grid-cols-1 md:grid-cols-2 gap-4'>
+              {client.screenshots.map((screenshot) => (
+                <div class='bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden shadow-md'>
+                  <img
+                    src={screenshot}
+                    alt={`${client.name} project screenshot`}
+                    class='w-full h-auto'
+                    loading='lazy'
+                  />
+                </div>
+              ))}
+            </div>
+            <p class='text-gray-500 dark:text-gray-400 text-sm mt-2 italic text-center'>
+              Screenshots shown for demonstration purposes
+            </p>
+          </section>
+        )
+      }
+    </div>
+  </div>
+</ClientLayout>
