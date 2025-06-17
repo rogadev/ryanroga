@@ -10,7 +10,7 @@ interface Props {
 const { title, description } = Astro.props
 ---
 
-<Layout>
+<Layout title={title} description={description}>
   <div class='relative'>
     <Navigation />
     <main id='main-content' class='pt-8 pb-20'>

@@ -1,7 +1,8 @@
 ---
 import ClientLayout from '../../layouts/ClientLayout.astro'
 import { clients } from '../../data/clients'
-import type { Client } from '../../types/client'
+
+export const prerender = true
 
 export function getStaticPaths() {
   return Object.keys(clients).map((slug) => ({
