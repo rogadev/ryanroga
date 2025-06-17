@@ -8,7 +8,7 @@ interface PersonalProject {
   readonly tags?: readonly string[]
 }
 
-const personalProjects: readonly PersonalProject[] = [
+const personalProjectsData: PersonalProject[] = [
   {
     id: 1,
     title: 'Brain - Daily Activity Tracker',
@@ -67,7 +67,9 @@ const personalProjects: readonly PersonalProject[] = [
     url: 'https://www.ezeval.app/',
     image: '/images/personal-projects/window-cleaner.png',
   },
-].sort((a, b) => a.id - b.id) as const
+]
+
+const personalProjects = personalProjectsData.sort((a, b) => a.id - b.id)
 ---
 
 <section
