@@ -5,11 +5,30 @@ interface PersonalProject {
   readonly description: string
   readonly url: string
   readonly image: string
+  readonly tags?: readonly string[]
 }
 
 const personalProjects: readonly PersonalProject[] = [
   {
     id: 1,
+    title: 'Brain - Daily Activity Tracker',
+    description:
+      'An intelligent brain-dumping app that uses Whisper API for speech-to-text transcription, automatically summarizes your daily activities, and generates comprehensive daily and weekly summaries perfect for standups and progress tracking.',
+    url: 'https://brain.roga.dev',
+    image: '/images/personal-projects/brain-tracker.png',
+    tags: ['AI', 'Whisper API', 'Productivity', 'Summaries'],
+  },
+  {
+    id: 2,
+    title: 'Clean - AI Text Cleaner',
+    description:
+      'A simple but powerful tool that instantly cleans AI-generated text by removing hidden whitespace fingerprinting, em dashes, and other LLM artifacts. One click to paste clean code straight to your clipboard.',
+    url: 'https://clean.roga.dev',
+    image: '/images/personal-projects/text-cleaner.png',
+    tags: ['Utility', 'AI', 'Text Processing', 'Clipboard'],
+  },
+  {
+    id: 3,
     title: 'Password Generator',
     description:
       'A customizable password generator that allows users to adjust parameters and share links with preset configurations.',
@@ -17,7 +36,7 @@ const personalProjects: readonly PersonalProject[] = [
     image: '/images/personal-projects/password-generator.png',
   },
   {
-    id: 2,
+    id: 4,
     title: 'Digital Mushrooms',
     description:
       'A web recreation of my physical LED art installation that toured festivals like Shambhala and Bass Coast. Control the breathing effect of LED mushrooms with adjustable parameters.',
@@ -25,7 +44,7 @@ const personalProjects: readonly PersonalProject[] = [
     image: '/images/personal-projects/mushrooms.png',
   },
   {
-    id: 3,
+    id: 5,
     title: 'Visual Experiments',
     description:
       'A collection of creative visual experiments built with Next.js and Three.js, exploring different parameters and effects.',
@@ -33,7 +52,7 @@ const personalProjects: readonly PersonalProject[] = [
     image: '/images/personal-projects/visual-experiments.png',
   },
   {
-    id: 4,
+    id: 6,
     title: '3D Map Explorer',
     description:
       'A custom 3D mapping tool built with Mapbox, created to provide better 3D visualization of Vancouver Island than Google Maps/Earth.',
@@ -41,7 +60,7 @@ const personalProjects: readonly PersonalProject[] = [
     image: '/images/personal-projects/map-explorer.png',
   },
   {
-    id: 5,
+    id: 7,
     title: 'Window Cleaning Evaluator',
     description:
       'One of my first web tools, built with vanilla HTML, CSS, and JavaScript. Still used by MossAway for evaluating window cleaning projects.',
@@ -77,28 +96,37 @@ const personalProjects: readonly PersonalProject[] = [
             href={project.url}
             target='_blank'
             rel='noopener noreferrer'
-            class='bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full overflow-hidden'
+            class='bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 flex flex-col h-full overflow-hidden group'
             aria-labelledby={`personal-project-${index}-title`}
           >
             <div class='relative h-48 overflow-hidden'>
               <img
                 src={project.image}
                 alt={`Screenshot of ${project.title} project`}
-                class='w-full h-full object-cover transition-transform duration-500 hover:scale-105'
+                class='w-full h-full object-cover transition-transform duration-500 group-hover:scale-105'
                 loading='lazy'
               />
             </div>
-            <div class='p-5 flex-grow'>
+            <div class='p-5 flex-grow flex flex-col'>
               <h3
                 id={`personal-project-${index}-title`}
                 class='text-xl font-semibold text-gray-800 dark:text-white mb-2'
               >
                 {project.title}
               </h3>
-              <p class='text-gray-600 dark:text-gray-400 text-sm'>
+              <p class='text-gray-600 dark:text-gray-400 text-sm flex-grow mb-3'>
                 {project.description}
               </p>
-              <div class='mt-3 text-blue-600 dark:text-blue-400 text-sm font-medium'>
+              {project.tags && (
+                <div class='flex flex-wrap gap-1 mb-3'>
+                  {project.tags.map((tag) => (
+                    <span class='px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs rounded-full'>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <div class='text-blue-600 dark:text-blue-400 text-sm font-medium group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors'>
                 Explore →
               </div>
             </div>
